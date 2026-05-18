@@ -1,0 +1,10 @@
+# Ignorar todo
+*
+
+# Permitir solo lo necesario para inferencia
+!.gitignore
+!.gitattributes
+!README.md
+!inferir.py
+!models/
+!models/unet_final_pretrained.pth
