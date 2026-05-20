@@ -1,0 +1,41 @@
+# Data configuration
+sources:
+  medetec:
+    name: "Medetec wound dataset"
+    url: "https://www.kaggle.com/datasets/..."
+    split_ratio: 0.6
+
+  fusc:
+    name: "FUSC wound dataset"
+    url: "https://www.kaggle.com/datasets/..."
+    split_ratio: 0.25
+
+  wsnet:
+    name: "WSNet wound dataset"
+    url: "https://www.kaggle.com/datasets/..."
+    split_ratio: 0.15
+
+paths:
+  raw: data/raw/data_wound_seg
+  processed: data/processed
+  external: data/external
+  metadata: data/metadata_enriched.csv
+
+preprocessing:
+  image_size: 384
+  normalization:
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+
+splits:
+  train: 0.7
+  val: 0.2
+  test: 0.1
+  seed: 42
+
+augmentation:
+  random_rotate90: 0.5
+  flip: 0.5
+  shift_scale_rotate: 0.5
+  brightness_contrast: 0.5
+  gauss_noise: 0.3

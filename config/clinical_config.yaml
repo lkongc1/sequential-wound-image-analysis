@@ -1,0 +1,38 @@
+# Clinical protocol configuration
+clinical:
+  acquisition:
+    min_resolution:
+      width: 512
+      height: 512
+    color_space: RGB
+    lighting: "standardized clinical lighting"
+
+  quality_control:
+    min_brightness: 10.0
+    max_brightness: 240.0
+    min_sharpness_laplacian: 10.0
+    max_aspect_ratio: 5.0
+
+  safety:
+    human_overlay_required: false
+    physician_review_threshold: 0.85
+    alert_on_ambiguous: true
+
+  reporting:
+    include_heatmap: true
+    include_bbox: true
+    include_area_percentage: true
+    language: en
+
+validation:
+  physician_agreement:
+    min_inter_rater_reliability: 0.85
+    sample_size: 100
+
+  fda_submission:
+    intended_use: "Wound segmentation for clinical assessment"
+    patient_population: "Adult patients with chronic wounds"
+    performance_goals:
+      dice_score: 0.85
+      sensitivity: 0.90
+      specificity: 0.95

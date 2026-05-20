@@ -1,0 +1,58 @@
+"""Core module for SOLID-compliant abstractions."""
+from src.core.base import (
+    BaseDataSource,
+    BaseDownloader,
+    BaseExtractor,
+    BaseValidator,
+    BaseQualityChecker,
+    FileValidator,
+    MaskValidator,
+    DataFrameValidator,
+    QualityPipeline,
+)
+from src.core.exceptions import (
+    WoundSegError,
+    DataError,
+    DownloadError,
+    ExtractionError,
+    ValidationError,
+    QualityCheckError,
+    ModelError,
+    ModelLoadError,
+    ModelInferenceError,
+    TrainingError,
+    ConfigurationError,
+    DeviceError,
+    APIError,
+    AuthenticationError,
+    RateLimitError,
+)
+
+__all__ = [
+    # Base classes
+    "BaseDataSource",
+    "BaseDownloader",
+    "BaseExtractor",
+    "BaseValidator",
+    "BaseQualityChecker",
+    "FileValidator",
+    "MaskValidator",
+    "DataFrameValidator",
+    "QualityPipeline",
+    # Exceptions
+    "WoundSegError",
+    "DataError",
+    "DownloadError",
+    "ExtractionError",
+    "ValidationError",
+    "QualityCheckError",
+    "ModelError",
+    "ModelLoadError",
+    "ModelInferenceError",
+    "TrainingError",
+    "ConfigurationError",
+    "DeviceError",
+    "APIError",
+    "AuthenticationError",
+    "RateLimitError",
+]

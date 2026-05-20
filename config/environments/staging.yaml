@@ -1,0 +1,25 @@
+# Staging environment configuration
+data_dir: data/raw/data_wound_seg
+output_dir: output/train_results
+model_dir: models
+metadata_path: data/metadata_enriched.csv
+
+training:
+  encoder: resnet34
+  encoder_weights: imagenet
+  image_size: 384
+  batch_size: 8
+  accumulation_steps: 4
+  epochs: 150
+  learning_rate: 5e-5
+  patience: 20
+  device: cuda
+
+inference:
+  batch_size: 16
+  threshold: 0.5
+  postprocess_min_area: 50
+
+logging:
+  level: INFO
+  log_dir: logs/training
