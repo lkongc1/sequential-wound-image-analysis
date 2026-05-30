@@ -144,3 +144,38 @@ class TrainingConfig:
             self.cleaned_csv = project_root / self.cleaned_csv
         if not self.checkpoint_dir.is_absolute():
             self.checkpoint_dir = project_root / self.checkpoint_dir
+
+
+@dataclass
+class InstanceConfig:
+    """Configuration for instance segmentation via watershed and YOLO.
+
+    Watershed parameters control the distance-transform-based separation of
+    touching wound blobs. Polygon parameters control contour approximation for
+    YOLO segmentation export. YOLO parameters define training and inference
+    settings for the native YOLO11-seg model.
+
+    Attributes:
+        dist_threshold_ratio: Fraction of max distance for sure-fg markers
+            (lower = more instances, default 0.3).
+        min_instance_area_px: Minimum pixel area to retain a watershed instance
+            (default 50).
+        kernel_close: Kernel size for morphological close before distance
+            transform (default 3).
+        polygon_epsilon_ratio: Fraction of arc length for contour approximation
+            (default 0.001).
+        polygon_max_points: Maximum points in the output polygon
+            (default 32).
+        yolo_model_path: Path to YOLO model weights for inference.
+        yolo_image_size: Inference image size in pixels (default 640).
+        yolo_confidence: Confidence threshold for YOLO detections
+            (default 0.25).
+    """
+    dist_threshold_ratio: float = 0.3
+    min_instance_area_px: int = 50
+    kernel_close: int = 3
+    polygon_epsilon_ratio: float = 0.001
+    polygon_max_points: int = 32
+    yolo_model_path: str = ""
+    yolo_image_size: int = 640
+    yolo_confidence: float = 0.25

@@ -129,6 +129,48 @@ def _create_manet(
     )
 
 
+@register_model("fpn")
+def _create_fpn(
+    encoder_name: str = "resnet50",
+    num_classes: int = 1,
+    pretrained: bool = True,
+) -> nn.Module:
+    if not _SMP_AVAILABLE:
+        raise ImportError(
+            "segmentation_models_pytorch not installed. "
+            "Run: pip install segmentation-models-pytorch"
+        )
+    assert smp is not None
+    encoder_weights = "imagenet" if pretrained else None
+    return smp.FPN(
+        encoder_name=encoder_name,
+        encoder_weights=encoder_weights,
+        in_channels=3,
+        classes=num_classes,
+    )
+
+
+@register_model("deeplabv3plus")
+def _create_deeplabv3plus(
+    encoder_name: str = "resnet50",
+    num_classes: int = 1,
+    pretrained: bool = True,
+) -> nn.Module:
+    if not _SMP_AVAILABLE:
+        raise ImportError(
+            "segmentation_models_pytorch not installed. "
+            "Run: pip install segmentation-models-pytorch"
+        )
+    assert smp is not None
+    encoder_weights = "imagenet" if pretrained else None
+    return smp.DeepLabV3Plus(
+        encoder_name=encoder_name,
+        encoder_weights=encoder_weights,
+        in_channels=3,
+        classes=num_classes,
+    )
+
+
 # ------------------------------------------------------------------ #
 # Import custom model modules to trigger @register_model side effects
 # ------------------------------------------------------------------ #

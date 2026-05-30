@@ -1,30 +1,30 @@
 #!/usr/bin/env python3
-"""Entrena U-Net ResNet50 PRETRAINED — modelo final de segmentacion de heridas.
+"""Entrena U-Net ResNet18 PRETRAINED — optimizado para heridas finas/lineales.
 
 Proyecto: Deteccion y clasificacion de los tipos de heridas mediante
            tecnicas de vision computacional.
 
-Fase actual: DETECCION / SEGMENTACION (modelo ganador del benchmark).
+Fase actual: SEGMENTACION MULTI-TIPO (irregulares + lineales).
 
-Este script entrena SOLO U-Net con encoder ResNet50 + pesos ImageNet.
-Es el modelo que obtuvo el mejor F2-Score y Dice (0.8927) en
-la evaluacion comparativa de 4 arquitecturas.
+ResNet18 tiene 16x downsampling (vs 32x de ResNet50). Esto preserva
+estructuras finas (cortes lineales, suturas) que ResNet50 destruye
+en el bottleneck.
 
-Estrategia de mejora (v4 — mascaras limpias):
-  - TverskyLoss (a=0.5, b=0.5): balance precision/sensibilidad — evita falsos positivos
+Estrategia:
+  - TverskyLoss (a=0.5, b=0.5): balance precision/sensibilidad
   - CosineAnnealingWarmRestarts: reinicios cada 30 epocas
   - Augmentacion pesada: ElasticTransform, GridDistortion, HSV, GaussNoise
-    -> desensibiliza contra manchas de sangre, costras, suturas, tonos rojizos de piel
-  - 384x384, batch=16, 150 epocas
+  - 512x512, batch=24 (ResNet18 es mas ligero), 150 epocas
+  - VRAM estimado: ~4.5 GB
 
-Objetivo: Mascaras limpias sin falsos positivos (manchas rojas, dedos, ruido de textura).
+Objetivo: Segmentar correctamente TODO tipo de herida (irregulares + lineales).
 
 Uso:
-    python scripts/6_train_unet_final.py
+    python scripts/6b_train_unet_r18.py
 
 Salida:
-    models/unet_final_pretrained.pth  — pesos del modelo entrenado
-    logs/unet_final_YYYYMMDD_HHMMSS.log — bitacora de entrenamiento
+    models/unet_r18_final.pth  — pesos del modelo entrenado
+    logs/unet_r18_YYYYMMDD_HHMMSS.log — bitacora de entrenamiento
 """
 
 from __future__ import annotations
@@ -77,7 +77,7 @@ class SchedulerWrapper:
 
 log_dir = PROJECT_ROOT / "logs"
 log_dir.mkdir(exist_ok=True)
-log_path = log_dir / f"unet_final_{time.strftime('%Y%m%d_%H%M%S')}.log"
+log_path = log_dir / f"unet_r18_{time.strftime('%Y%m%d_%H%M%S')}.log"
 
 logging.basicConfig(
     level=logging.INFO,
@@ -95,9 +95,9 @@ logger = logging.getLogger(__name__)
 # CONFIG — TverskyLoss + CosineAnnealing + augmentation para Sens >= 0.90
 # ================================================================== #
 
-IMAGE_SIZE = (384, 384)    # Mejor detalle espacial que 256x256
-BATCH_SIZE = 16            # Batch probado: mejor generalización que 32
-EPOCHS = 150               # 150 épocas con warm restarts cada 30
+IMAGE_SIZE = (512, 512)    # Mas pixeles para estructuras finas
+BATCH_SIZE = 16            # 512x512 con ResNet18 + augmentacion (~3.5 GB VRAM)
+EPOCHS = 150               # 150 epocas con warm restarts cada 30
 LEARNING_RATE = 1e-3
 NUM_WORKERS = 4
 VAL_SPLIT = 0.2
@@ -109,7 +109,7 @@ TVERSKY_ALPHA = 0.5
 TVERSKY_BETA = 0.5
 
 CSV_PATH = PROJECT_ROOT / "data" / "processed" / "dataset_final.csv"
-SAVE_PATH = PROJECT_ROOT / "models" / "unet_final_pretrained.pth"
+SAVE_PATH = PROJECT_ROOT / "models" / "unet_r18_final.pth"
 
 # ================================================================== #
 # DATOS
@@ -158,16 +158,16 @@ def entrenar_unet(train_loader: DataLoader, val_loader: DataLoader) -> Path:
         vram = torch.cuda.get_device_properties(0).total_memory / 1e9
         logger.info("GPU: %s (%.1f GB) | Device: %s", gpu, vram, device)
 
-    # Modelo U-Net con encoder ResNet50 + pesos ImageNet
-    logger.info("Creando U-Net ResNet50 PRETRAINED (ImageNet)...")
-    model = create_model("unet", pretrained=True)
+    # Modelo U-Net con encoder ResNet18 + pesos ImageNet (16x downsampling)
+    logger.info("Creando U-Net ResNet18 PRETRAINED (ImageNet) — 16x down...")
+    model = create_model("unet", encoder_name="resnet18", pretrained=True)
     n_params = sum(p.numel() for p in model.parameters())
     logger.info("Parametros: %s (%.1f M)", n_params, n_params / 1e6)
 
-    # TverskyLoss: α=0.5, β=0.5 → balance precision/sensibilidad
+    # TverskyLoss: a=0.5, b=0.5 -> balance precision/sensibilidad
     # Diseñado para mascaras limpias sin falsos positivos
     criterion = TverskyLoss(alpha=TVERSKY_ALPHA, beta=TVERSKY_BETA)
-    logger.info("Loss: TverskyLoss (α=%.1f FP, β=%.1f FN) — BALANCEADO", TVERSKY_ALPHA, TVERSKY_BETA)
+    logger.info("Loss: TverskyLoss (a=%.1f FP, b=%.1f FN) — BALANCEADO", TVERSKY_ALPHA, TVERSKY_BETA)
 
     trainer = Trainer(
         model=model,
@@ -199,7 +199,7 @@ def entrenar_unet(train_loader: DataLoader, val_loader: DataLoader) -> Path:
                 "epochs": EPOCHS,
                 "learning_rate": LEARNING_RATE,
                 "pretrained": True,
-                "encoder": "resnet50",
+                "encoder": "resnet18",
                 "loss": "TverskyLoss",
                 "tversky_alpha": TVERSKY_ALPHA,
                 "tversky_beta": TVERSKY_BETA,
@@ -228,13 +228,13 @@ def entrenar_unet(train_loader: DataLoader, val_loader: DataLoader) -> Path:
 
 def main() -> None:
     logger.info("=" * 60)
-    logger.info("  ENTRENAMIENTO FINAL — U-Net ResNet50 PRETRAINED v4 (balanceado)")
+    logger.info("  ENTRENAMIENTO FINAL — U-Net ResNet18 PRETRAINED (16x down)")
     logger.info("  Proyecto: Deteccion y clasificacion de heridas")
-    logger.info("  Fase: SEGMENTACION (mascaras limpias, sin falsos positivos)")
+    logger.info("  Fase: SEGMENTACION MULTI-TIPO (irregulares + lineales)")
     logger.info("=" * 60)
     logger.info("  Imagen: %s | Epocas: %d | Batch: %d", IMAGE_SIZE, EPOCHS, BATCH_SIZE)
-    logger.info("  Encoder: ResNet50 + pesos ImageNet")
-    logger.info("  Loss: TverskyLoss (α=%.1f FP, β=%.1f FN) — BALANCEADO", TVERSKY_ALPHA, TVERSKY_BETA)
+    logger.info("  Encoder: ResNet18 (16x down) + pesos ImageNet")
+    logger.info("  Loss: TverskyLoss (a=%.1f FP, b=%.1f FN) — BALANCEADO", TVERSKY_ALPHA, TVERSKY_BETA)
     logger.info("  Scheduler: CosineAnnealingWarmRestarts (T_0=%d)", T_0)
     logger.info("  Augmentation: ElasticTransform, GridDistortion, HSV, GaussNoise, Flips")
     logger.info("  Guardado: %s", SAVE_PATH)

@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_default_transforms(image_size: Tuple[int, int] = (256, 256)) -> A.Compose:
-    """Get default transforms: resize and normalization.
+    """Get default transforms: resize and normalization (no augmentation).
 
     Args:
         image_size: target (height, width) for resizing
@@ -26,6 +26,59 @@ def get_default_transforms(image_size: Tuple[int, int] = (256, 256)) -> A.Compos
     """
     return A.Compose(
         [
+            A.Resize(image_size[0], image_size[1]),
+            A.Normalize(
+                mean=(0.485, 0.456, 0.406),
+                std=(0.229, 0.224, 0.225),
+            ),
+            ToTensorV2(),
+        ],
+        additional_targets={"mask": "mask"},
+    )
+
+
+def get_training_transforms(image_size: Tuple[int, int] = (384, 384)) -> A.Compose:
+    """Get training transforms with heavy data augmentation.
+
+    Augmentations are applied in sync to both image and mask.
+    Designed to desensitize the model against:
+      - Blood stains, scabs, suture marks (ElasticTransform, GridDistortion, GaussNoise)
+      - Reddish skin tones being confused with wounds (HueSaturationValue)
+      - Small dataset overfitting (spatial transforms)
+
+    Order: spatial -> color -> noise -> resize -> normalize -> tensor
+
+    Args:
+        image_size: target (height, width) for resizing
+
+    Returns:
+        Albumentations Compose with full augmentation pipeline
+    """
+    return A.Compose(
+        [
+            # --- Spatial (applied to image AND mask) ---
+            A.ElasticTransform(
+                alpha=30, sigma=5, p=0.4,
+            ),
+            A.GridDistortion(
+                num_steps=5, distort_limit=0.15, p=0.3,
+            ),
+            A.RandomRotate90(p=0.5),
+            A.HorizontalFlip(p=0.5),
+            A.VerticalFlip(p=0.2),
+
+            # --- Color / texture (image only, mask untouched) ---
+            A.HueSaturationValue(
+                hue_shift_limit=10, sat_shift_limit=20, val_shift_limit=15, p=0.5,
+            ),
+            A.RandomBrightnessContrast(
+                brightness_limit=0.15, contrast_limit=0.15, p=0.4,
+            ),
+
+            # --- Noise (desensitize against fine texture) ---
+            A.GaussNoise(std_range=(0.02, 0.08), p=0.3),
+
+            # --- Finalize ---
             A.Resize(image_size[0], image_size[1]),
             A.Normalize(
                 mean=(0.485, 0.456, 0.406),

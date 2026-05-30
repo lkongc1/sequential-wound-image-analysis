@@ -1,0 +1,222 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║        COMANDOS — Segmentación Semántica + Instancias                 ║
+║        Sequential Wound Image Analysis                                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+Todos los comandos se ejecutan desde la RAÍZ del proyecto con:
+    .\.venv\Scripts\python.exe <script> [args]
+
+O activando el venv primero:
+    .\.venv\Scripts\Activate.ps1
+    python <script> [args]
+
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  1. PREPARACIÓN DE DATOS                                              ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+# Descargar dataset base (Medetec + fuentes online)
+python scripts/1_download_dataset.py
+
+# Construir dataset unificado (organizar + dividir train/val/test)
+python scripts/2_build_dataset.py
+
+# Agregar imágenes negativas (sin herida) para reducir falsos positivos
+python scripts/9_add_negatives.py
+
+# Análisis exploratorio del dataset
+python scripts/3_eda.py
+
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  2. ENTRENAMIENTO — Screening (12 arquitecturas, 20 épocas c/u)      ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+# Screening COMPLETO (entrena las 12 combinaciones en secuencia)
+python scripts/11_screening_architectures.py
+
+# O entrenar INDIVIDUALMENTE cada modelo:
+
+# --- ResNeXt-50 ---
+python scripts/train_individual.py --arch deeplabv3 --encoder resnext50_32x4d --name DeepLabV3_ResNeXt50
+python scripts/train_individual.py --arch deeplabv3plus --encoder resnext50_32x4d --name DeepLabV3Plus_ResNeXt50
+python scripts/train_individual.py --arch unet --encoder resnext50_32x4d --name UNet_ResNeXt50
+python scripts/train_individual.py --arch fpn --encoder resnext50_32x4d --name FPN_ResNeXt50
+
+# --- ResNet-101 ---
+python scripts/train_fpn_resnet101.py           # FPN + ResNet-101
+python scripts/train_unet_resnet101.py           # U-Net + ResNet-101
+python scripts/train_deeplabv3plus_resnet101.py  # DeepLabV3+ + ResNet-101
+
+# --- EfficientNet-B3 (mejor encoder según screening) ---
+python scripts/train_fpn_efficientnet.py           # FPN + EfficientNet-B3 (MEJOR)
+python scripts/train_unet_efficientnet.py           # U-Net + EfficientNet-B3
+python scripts/train_deeplabv3plus_efficientnet.py  # DeepLabV3+ + EfficientNet-B3
+
+# --- SegFormer ---
+python scripts/train_fpn_segformer.py     # FPN + SegFormer (mit_b2)
+python scripts/train_unet_segformer.py     # U-Net + SegFormer (mit_b2)
+
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  3. ENTRENAMIENTO — Modelos clásicos (scratch)                        ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+# U-Net desde cero (resnet50 backbone, entrenamiento largo)
+python scripts/6_train_unet_final.py
+
+# U-Net con ResNet-18 (rápido, menos preciso)
+python scripts/6b_train_unet_r18.py
+
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  4. ENTRENAMIENTO — YOLO11 Segmentación de Instancias                 ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+# Preparar dataset en formato YOLO
+python scripts/8_prepare_yolo.py
+
+# Entrenar YOLO11n-seg
+python scripts/train_yolo_seg.py
+
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  5. EVALUACIÓN                                                        ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+# Evaluar TODOS los modelos del screening
+python scripts/5_evaluate.py
+
+# Monitorear entrenamiento en vivo
+python scripts/monitor_training.py
+
+# Ejecutar TODOS los entrenamientos (uno tras otro)
+python scripts/run_all_training.py
+
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  6. INFERENCIA — Segmentación SEMÁNTICA (máscara binaria)             ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+# ── Inferencia básica con FPN_EfficientNetB3 (mejor modelo) ──
+
+# Comando MÍNIMO (predict + overlay)
+python scripts/inference/predecir.py ruta/imagen.jpg
+
+# Ajustar umbral de binarización
+#   (subir a 0.6-0.7 si detecta manchas rojas o fondos)
+python scripts/inference/predecir.py ruta/imagen.jpg --umbral 0.6
+
+# Post-procesamiento: limpiar ruido + rellenar huecos
+python scripts/inference/predecir.py ruta/imagen.jpg --limpiar 3 --rellenar 7
+
+# Filtrar blobs chicos por área mínima (% de la imagen)
+python scripts/inference/predecir.py ruta/imagen.jpg --area-min 0.01
+
+# Una sola herida grande (conserva solo el blob más grande)
+python scripts/inference/predecir.py ruta/imagen.jpg --solo-mayor
+
+# Test-Time Augmentation (+precisión, 4x más lento)
+python scripts/inference/predecir.py ruta/imagen.jpg --tta
+
+# Sin filtros (máscara cruda del modelo)
+python scripts/inference/predecir.py ruta/imagen.jpg --cruda
+
+# Cambiar color del overlay
+python scripts/inference/predecir.py ruta/imagen.jpg --color rojo
+
+# Combinar filtros (ejemplo completo)
+python scripts/inference/predecir.py ruta/imagen.jpg --umbral 0.5 --limpiar 3 --rellenar 7 --area-min 0.005
+
+# Guardar en directorio específico
+python scripts/inference/predecir.py ruta/imagen.jpg --salida ./resultados
+
+# ── Comparar los 12 modelos del screening sobre una imagen ──
+python scripts/inference/comparar_modelos_screening.py
+python scripts/inference/comparar_modelos_screening.py --imagen ruta/imagen.jpg
+
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  7. INFERENCIA — Segmentación de INSTANCIAS                           ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+# ── WATERSHED (rápido, para casos simples) ──
+python scripts/inference/predecir.py ruta/imagen.jpg --instancias
+
+# ── SAM2 (más preciso, separa heridas pegadas) ──
+# Usa SAM2.1 Hiera-L (224M params, ~900MB, descarga automática 1ra vez)
+python scripts/inference/predecir.py ruta/imagen.jpg --sam
+
+# SAM2 con modelo más rápido (menos preciso)
+python scripts/inference/predecir.py ruta/imagen.jpg --sam --sam-model sam2.1_hiera_s
+
+# SAM2 con modelo balanceado
+python scripts/inference/predecir.py ruta/imagen.jpg --sam --sam-model sam2.1_hiera_b+
+
+# ── YOLO11-seg (segmentación de instancias nativa) ──
+python scripts/inference/predecir_yolo_seg.py ruta/imagen.jpg
+python scripts/inference/predecir_yolo_seg.py ruta/imagen.jpg --conf 0.3 --guardar-mapa
+
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  8. INFERENCIA — YOLO + U-Net híbrido                                 ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+# YOLO detecta ROI, U-Net segmenta dentro de cada ROI
+python scripts/inference/predecir_yolo_unet.py ruta/imagen.jpg
+
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  9. TESTS                                                             ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+# Test rápido de una imagen (compara modelo vs ground truth)
+python scripts/inference/test_miimage.py
+
+# Test de instancias (watershed + SAM2)
+python scripts/inference/test_instancias.py
+
+# Suite completa de tests
+python -m pytest tests/ -v
+
+# Tests de un área específica
+python -m pytest tests/unit/test_instance_seg.py -v
+
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  REFERENCIA — Modelos entrenados                                      ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+models/
+  screening/                          # 12 modelos del screening
+    FPN_EfficientNetB3_best.pth       ← MEJOR MODELO (semántica)
+    yolo11_seg_best.pt                ← YOLO segmentación de instancias
+    ...
+  general/
+    unet_resnet50_v4.pth              # U-Net general
+  comparativa/
+    nested_unet.pth                   # U-Net++
+    attention_unet.pth                # Attention U-Net
+    deeplabv3.pth                     # DeepLabV3
+    unet_scratch.pth                  # U-Net from scratch
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  FLUJO RECOMENDADO                                                    ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+1. Segmentación semántica (una máscara):
+   python scripts/inference/predecir.py ruta/imagen.jpg --umbral 0.4
+
+2. Segmentación de instancias (varias heridas):
+   # Rápido:  python ... --instancias
+   # Preciso: python ... --sam
+
+3. Evaluar todas las arquitecturas:
+   python scripts/inference/comparar_modelos_screening.py
+
+4. Pipeline completa:
+   python scripts/1_download_dataset.py
+   python scripts/2_build_dataset.py
+   python scripts/11_screening_architectures.py
+   python scripts/5_evaluate.py
+   python scripts/inference/predecir.py ruta/imagen.jpg --sam
