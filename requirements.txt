@@ -23,3 +23,8 @@ roboflow>=1.1.0
 
 # Classification
 timm>=0.9.0
+torchmetrics>=1.0.0
+pytorch-lightning>=2.0.0
+
+# Distributed training
+dask[distributed]>=2024.1.0

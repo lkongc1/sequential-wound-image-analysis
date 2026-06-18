@@ -61,9 +61,12 @@ Thumbs.db
 desktop.ini
 
 # ============================================================
-# Personal Test Files
+# Personal Test Files & Inference Outputs
 # ============================================================
 scripts/inference/miImage.jpg
+scripts/inference/resultados/
+scripts/inference/miImage_*
+scripts/inference/comparacion_screening/
 
 # ============================================================
 # Data — Generated / Raw (excluded)
@@ -77,17 +80,43 @@ data/processed/test/
 data/processed/train/
 data/processed/val/
 data/reports/
+data/classification/
+data/yolo/
+data-clasificador/raw/
+
+# Keep only the processed CSVs needed for training
+!data-clasificador/train.csv
+!data-clasificador/val.csv
+!data-clasificador/test.csv
 
 # ============================================================
-# Models — keep only the distributed pretrained checkpoint
+# Models — local checkpoints and training artifacts
 # ============================================================
+models/checkpoints/
+models/comparativa/
+models/general/
+models/screening/
+models/classifier/*.ckpt
+models/classifier/last*.ckpt
+models/classifier/logs/
+models/classifier/best-epoch*/
 models/attention_unet_final.pth
 models/deeplabv3_final.pth
 models/nested_unet_final.pth
 models/unet_final.pth
+
+# Keep only the distributed best classifier checkpoint
+!models/classifier/best.pth
 
 # ============================================================
 # Jupyter
 # ============================================================
 .ipynb_checkpoints/
 *.ipynb
+
+# ============================================================
+# Training Artifacts
+# ============================================================
+logs/
+runs/
+*.ckpt

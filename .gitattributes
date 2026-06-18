@@ -1,3 +1,4 @@
 models/unet_final_pretrained.pth filter=lfs diff=lfs merge=lfs -text
 models/classifier/*.pth filter=lfs diff=lfs merge=lfs -text
 models/classifier/*.ckpt filter=lfs diff=lfs merge=lfs -text
+models/classifier/best.pth filter=lfs diff=lfs merge=lfs -text
