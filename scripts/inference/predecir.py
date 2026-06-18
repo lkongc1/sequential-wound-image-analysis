@@ -307,7 +307,18 @@ def _classify_instance(
     x1, x2 = int(xs.min()), int(xs.max()) + 1
     y1, y2 = int(ys.min()), int(ys.max()) + 1
 
-    # Ensure minimum crop size
+    # Add context padding (30% of bbox size) — training images are full-frame,
+    # so tight crops cause domain shift. Clamped to image boundaries.
+    bbox_w = x2 - x1
+    bbox_h = y2 - y1
+    pad_w = int(bbox_w * 0.30)
+    pad_h = int(bbox_h * 0.30)
+    x1 = max(0, x1 - pad_w)
+    x2 = min(image_bgr.shape[1], x2 + pad_w)
+    y1 = max(0, y1 - pad_h)
+    y2 = min(image_bgr.shape[0], y2 + pad_h)
+
+    # Ensure minimum crop size after padding
     if (x2 - x1) < 10 or (y2 - y1) < 10:
         x1 = max(0, x1 - 5)
         x2 = min(image_bgr.shape[1], x2 + 5)

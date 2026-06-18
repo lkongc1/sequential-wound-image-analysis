@@ -410,6 +410,10 @@ def parse_args() -> argparse.Namespace:
         help="Skip backbone freezing phase",
     )
     parser.add_argument(
+        "--freeze-epochs", type=int, default=3,
+        help="Number of epochs to freeze backbone (default: 3). Ignored if --no-freeze.",
+    )
+    parser.add_argument(
         "--no-mask", action="store_true",
         help="Use 3-channel input (no mask channel)",
     )
@@ -453,7 +457,7 @@ def main() -> None:
         learning_rate=args.lr,
         accumulation_steps=args.accumulate,
         use_mask=not args.no_mask,
-        freeze_backbone_epochs=0 if args.no_freeze else 5,
+        freeze_backbone_epochs=0 if args.no_freeze else args.freeze_epochs,
     )
 
     # Auto-detect num_classes from CSV

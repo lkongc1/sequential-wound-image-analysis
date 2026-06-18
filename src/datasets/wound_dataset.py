@@ -91,8 +91,22 @@ def get_training_transforms(image_size: Tuple[int, int] = (384, 384)) -> A.Compo
 
 
 def load_image_safely(path: Path) -> np.ndarray:
-    """Load image with validation and error logging for FDA traceability."""
-    image = cv2.imread(str(path))
+    """Load image with validation and error logging for FDA traceability.
+
+    On Windows, cv2.imread(str(path)) fails with non-ASCII paths like
+    "lesión-deportiva.jpg".  We use np.fromfile + cv2.imdecode to handle
+    unicode paths reliably across platforms.
+    """
+    try:
+        image = cv2.imread(str(path))
+        if image is None:
+            # Fallback: read raw bytes and decode (handles unicode paths on Windows)
+            raw = np.fromfile(str(path), dtype=np.uint8)
+            image = cv2.imdecode(raw, cv2.IMREAD_COLOR)
+    except Exception:
+        raw = np.fromfile(str(path), dtype=np.uint8)
+        image = cv2.imdecode(raw, cv2.IMREAD_COLOR)
+
     if image is None:
         logger.error(f"Failed to load image: {path}")
         raise FileNotFoundError(f"Image not found or corrupted: {path}")
@@ -100,8 +114,19 @@ def load_image_safely(path: Path) -> np.ndarray:
 
 
 def load_mask_safely(path: Path) -> np.ndarray:
-    """Load binary mask with validation and error logging."""
-    mask = cv2.imread(str(path), cv2.IMREAD_GRAYSCALE)
+    """Load binary mask with validation and error logging.
+
+    Uses np.fromfile + cv2.imdecode for unicode path safety on Windows.
+    """
+    try:
+        mask = cv2.imread(str(path), cv2.IMREAD_GRAYSCALE)
+        if mask is None:
+            raw = np.fromfile(str(path), dtype=np.uint8)
+            mask = cv2.imdecode(raw, cv2.IMREAD_GRAYSCALE)
+    except Exception:
+        raw = np.fromfile(str(path), dtype=np.uint8)
+        mask = cv2.imdecode(raw, cv2.IMREAD_GRAYSCALE)
+
     if mask is None:
         logger.error(f"Failed to load mask: {path}")
         raise FileNotFoundError(f"Mask not found or corrupted: {path}")

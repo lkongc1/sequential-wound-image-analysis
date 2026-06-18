@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 """Download, normalize, balance, and split 7-class wound classification data.
 
-Downloads 3 Roboflow datasets into data-clasificador/raw/, maps English labels
-to Spanish taxonomy, undersamples to ~600/class, and produces a stratified
-70/15/15 train/val/test split.
+Integrates two data sources:
+  1. KaggleWound (431 images) — downloaded via Roboflow SDK into data-clasificador/raw/
+  2. RoboflowWound (1495 images) — local data in data/raw/basic_wound_classify/
+
+Merges both sources, maps English labels to Spanish taxonomy, undersamples
+majority classes to ~250/class, and produces a stratified 70/15/15
+train/val/test split.
 
 Usage:
     python scripts/download_classification_data.py
@@ -30,9 +34,10 @@ from tqdm import tqdm
 API_KEY: str = "DVnQXr1udAOhcikIJWnJ"
 OUTPUT_DIR: Path = Path("data-clasificador")
 RAW_DIR: Path = OUTPUT_DIR / "raw"
+ROBOFLOW_LOCAL_DIR: Path = Path("data/raw/basic_wound_classify")
 MANIFEST_PATH: Path = OUTPUT_DIR / "manifest.csv"
 SEED: int = 42
-TARGET_PER_CLASS: int = 270
+TARGET_PER_CLASS: int = 250
 
 # Label mapping: English (source label) → Spanish (7-class taxonomy)
 LABEL_MAP: Dict[str, str] = {
@@ -143,6 +148,59 @@ def download_datasets(skip_download: bool = False) -> None:
             )
             if not any(dest_dir.iterdir()) if dest_dir.exists() else True:
                 raise
+
+
+# ------------------------------------------------------------------ #
+# Scan Roboflow local data
+# ------------------------------------------------------------------ #
+
+
+def scan_roboflow_local() -> pd.DataFrame:
+    """Scan local Roboflow dataset from data/raw/basic_wound_classify/.
+
+    The folder structure is:
+        data/raw/basic_wound_classify/{train,valid,test}/{class_name}/*.jpg
+
+    Class names are in English (abrasion, bruise, burn, laceration, normal skin).
+    Returns a DataFrame with same schema as scan_raw_data (image_path, label, source).
+    """
+    image_extensions = {".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".tif"}
+    records: List[Dict[str, str]] = []
+
+    if not ROBOFLOW_LOCAL_DIR.exists():
+        logger.warning("Roboflow local dir not found: %s — skipping", ROBOFLOW_LOCAL_DIR)
+        return pd.DataFrame(columns=["image_path", "label", "source"])
+
+    for split_dir in sorted(ROBOFLOW_LOCAL_DIR.iterdir()):
+        if not split_dir.is_dir():
+            continue
+        for class_dir in sorted(split_dir.iterdir()):
+            if not class_dir.is_dir():
+                continue
+            # Preserve spaces in class name, replace later in normalize step
+            original_label = class_dir.name.lower().replace(" ", "_")
+            for img_file in sorted(class_dir.iterdir()):
+                if img_file.suffix.lower() in image_extensions:
+                    records.append({
+                        "image_path": str(img_file.resolve()),
+                        "label": original_label,
+                        "source": "RoboflowWound",
+                    })
+
+    if not records:
+        logger.warning("No images found in %s", ROBOFLOW_LOCAL_DIR)
+        return pd.DataFrame(columns=["image_path", "label", "source"])
+
+    df = pd.DataFrame(records)
+    logger.info(
+        "Scanned %d Roboflow images from %s (source=%s)",
+        len(df), ROBOFLOW_LOCAL_DIR, "RoboflowWound",
+    )
+    logger.info(
+        "Roboflow raw label distribution:\n%s",
+        df["label"].value_counts().to_string(),
+    )
+    return df
 
 
 # ------------------------------------------------------------------ #
@@ -422,14 +480,24 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    # 1. Download
+    # 1. Download Kaggle (skip if cached)
     download_datasets(skip_download=args.skip_download)
 
     # 1b. Normalize Kaggle directory structure (Wound_dataset/ → flat)
     _normalize_kaggle_structure()
 
-    # 2. Scan
-    df = scan_raw_data()
+    # 2. Scan Kaggle data
+    df_kaggle = scan_raw_data()
+
+    # 2b. Scan local Roboflow data (already downloaded to data/raw/basic_wound_classify/)
+    df_roboflow = scan_roboflow_local()
+
+    # 2c. Merge both sources
+    logger.info(
+        "Merging Kaggle (%d) + Roboflow (%d) = %d images",
+        len(df_kaggle), len(df_roboflow), len(df_kaggle) + len(df_roboflow),
+    )
+    df = pd.concat([df_kaggle, df_roboflow], ignore_index=True)
 
     # 3. Normalize labels
     df = normalize_labels(df)
