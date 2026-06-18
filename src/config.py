@@ -207,7 +207,7 @@ class ClassificationConfig:
     num_classes: int = 7
     model_name: str = "efficientnet_b3"
     image_size: tuple[int, int] = (384, 384)
-    batch_size: int = 16
+    batch_size: int = 32
     learning_rate: float = 1e-4
     class_names: list[str] = field(default_factory=lambda: [
         "raspón", "hematoma", "quemadura", "corte",
@@ -217,6 +217,15 @@ class ClassificationConfig:
     top_k: int = 3
     use_mask: bool = True
     freeze_backbone: bool = False
+    freeze_backbone_epochs: int = 5
+    dropout: float = 0.4
+    mixup_alpha: float = 0.4
+    cutmix_alpha: float = 0.4
+    label_smoothing: float = 0.1
+    gradient_clip_val: float = 1.0
+    accumulation_steps: int = 2
+    randaugment_n: int = 3
+    randaugment_m: int = 9
     checkpoint_path: Path | None = None
     max_epochs: int = 50
     patience: int = 10

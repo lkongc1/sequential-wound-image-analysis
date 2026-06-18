@@ -31,6 +31,7 @@ class WoundClassifier(nn.Module):
         pretrained: If True, load ImageNet-pretrained weights via timm.
         freeze_backbone: If True, freeze all backbone parameters, only
             train the classification head.
+        dropout: Dropout probability before classification head (default 0.4).
 
     Example:
         model = WoundClassifier(num_classes=7, pretrained=True)
@@ -43,6 +44,7 @@ class WoundClassifier(nn.Module):
         num_classes: int = 7,
         pretrained: bool = True,
         freeze_backbone: bool = False,
+        dropout: float = 0.4,
     ) -> None:
         super().__init__()
 
@@ -87,7 +89,7 @@ class WoundClassifier(nn.Module):
 
         # --- Replace classification head ---
         self.head = nn.Sequential(
-            nn.Dropout(p=0.3),
+            nn.Dropout(p=dropout),
             nn.Linear(_EFFICIENTNET_B3_FEATURES, num_classes),
         )
 

@@ -9,7 +9,7 @@
 | Chained PRs recommended | Yes |
 | Suggested split | PR 1: Foundation (~370 lines) → PR 2: Training+Inference (~260 lines) |
 | Delivery strategy | ask-on-risk |
-| Chain strategy | pending |
+| Chain strategy | feature-branch-chain |
 
 Decision needed before apply: Yes
 Chained PRs recommended: Yes
@@ -41,13 +41,13 @@ Chain strategy: pending
 
 ## Phase 3: Training
 
-- [ ] 3.1 Create `scripts/train_classifier.py` — PyTorch Lightning module with class-weighted CrossEntropyLoss, AdamW(1e-4) + cosine annealing, RandAugment transforms, MixUp/CutMix in training_step.
-- [ ] 3.2 Add callbacks — EarlyStopping on val macro-F1 (patience=10), ModelCheckpoint (best by val F1), TensorBoard logging with per-class F1 and confusion matrix.
-- [ ] 3.3 Smoke-test — run 1 epoch, verify loss decreases, no NaN, checkpoint saved.
+- [x] 3.1 Create `scripts/train_classifier.py` — PyTorch Lightning module with class-weighted CrossEntropyLoss, AdamW(1e-4) + cosine annealing, RandAugment transforms, MixUp/CutMix in training_step.
+- [x] 3.2 Add callbacks — EarlyStopping on val macro-F1 (patience=10), ModelCheckpoint (best by val F1), TensorBoard logging with per-class F1 and confusion matrix.
+- [x] 3.3 Smoke-test — run 1 epoch, verify loss decreases, no NaN, checkpoint saved.
 
 ## Phase 4: Inference Integration
 
-- [ ] 4.1 Add `--tipo CHECKPOINT` to `scripts/inference/predecir.py` — after watershed/SAM2 instances, load classifier, create 4ch masked crop per instance (RGB+mask), classify, write `{stem}_tipo.txt` with per-instance `id: class (conf)` format. Skip classifier when mask has zero positive pixels → write `SIN_DETECCION`.
-- [ ] 4.2 Add `--tipo CHECKPOINT` to `scripts/inference/predecir_yolo_unet.py` — after YOLO→U-Net per-bbox pipeline, classify each bbox crop. Zero YOLO detections → write `SIN_DETECCION`, skip classifier forward pass.
-- [ ] 4.3 Implement abstention — `max_conf < confidence_threshold` → output `desconocido`, confidence exactly at 0.5 returns class name. CUDA OOM → fallback to CPU with warning.
-- [ ] 4.4 E2E verify — run `predecir.py sample.png --tipo models/classifier/best.pth`, validate `_tipo.txt` format, test low-confidence abstention, test empty-image `SIN_DETECCION`.
+- [x] 4.1 Add `--tipo CHECKPOINT` to `scripts/inference/predecir.py` — after watershed/SAM2 instances, load classifier, create 4ch masked crop per instance (RGB+mask), classify, write `{stem}_tipo.txt` with per-instance `id: class (conf)` format. Skip classifier when mask has zero positive pixels → write `SIN_DETECCION`.
+- [x] 4.2 Add `--tipo CHECKPOINT` to `scripts/inference/predecir_yolo_unet.py` — after YOLO→U-Net per-bbox pipeline, classify each bbox crop. Zero YOLO detections → write `SIN_DETECCION`, skip classifier forward pass.
+- [x] 4.3 Implement abstention — `max_conf < confidence_threshold` → output `desconocido`, confidence exactly at 0.5 returns class name. CUDA OOM → fallback to CPU with warning.
+- [x] 4.4 E2E verify — run `predecir.py sample.png --tipo models/classifier/best.pth`, validate `_tipo.txt` format, test low-confidence abstention, test empty-image `SIN_DETECCION`.

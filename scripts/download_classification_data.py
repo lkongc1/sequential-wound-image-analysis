@@ -32,20 +32,26 @@ OUTPUT_DIR: Path = Path("data-clasificador")
 RAW_DIR: Path = OUTPUT_DIR / "raw"
 MANIFEST_PATH: Path = OUTPUT_DIR / "manifest.csv"
 SEED: int = 42
-TARGET_PER_CLASS: int = 600
+TARGET_PER_CLASS: int = 270
 
-# Label mapping: English (Roboflow label) → Spanish (7-class taxonomy)
+# Label mapping: English (source label) → Spanish (7-class taxonomy)
 LABEL_MAP: Dict[str, str] = {
     "abrasion": "raspón",
+    "abrasions": "raspón",
     "bruise": "hematoma",
+    "bruises": "hematoma",
     "burn": "quemadura",
+    "burns": "quemadura",
     "cut": "corte",
     "laceration": "laceración",
     "stab": "punción",
+    "stab_wound": "punción",
+    "ingrown_nails": "corte",  # Map to "corte" — too few images (31) for own class
     "normal_skin": "piel_sana",
+    "normal skin": "piel_sana",
 }
 
-# Ordered Spanish class names
+# Ordered Spanish class names (7-class taxonomy)
 CLASS_NAMES: List[str] = [
     "raspón",
     "hematoma",
@@ -58,11 +64,9 @@ CLASS_NAMES: List[str] = [
 
 # Roboflow datasets to download.
 # Each entry: (workspace, project_name, version_number, label)
-# Adjust workspace/project/version to match your Roboflow account.
+# Workspace: ensinerador  —  Project type: classification
 DATASETS: List[Tuple[str, str, int, str]] = [
-    ("wound-segmentation", "smartheal", 1, "SmartHeal"),
-    ("wound-segmentation", "basic-wound-classify", 1, "BasicWoundClassify"),
-    ("wound-segmentation", "burn-wound-classification", 1, "BurnWound"),
+    ("ensinerador", "basic-wound-classify-mpoys-zbndo-e2ae4", 1, "RoboflowWound"),
 ]
 
 # ------------------------------------------------------------------ #
@@ -144,6 +148,32 @@ def download_datasets(skip_download: bool = False) -> None:
 # ------------------------------------------------------------------ #
 # Scan downloaded data
 # ------------------------------------------------------------------ #
+
+
+def _normalize_kaggle_structure() -> None:
+    """Flatten KaggleWound data from Wound_dataset/{class}/ to KaggleWound/{class}/.
+
+    Kaggle data arrives as raw/KaggleWound/Wound_dataset/Abrasions/...jpg
+    The scanner expects raw/KaggleWound/Abrasions/...jpg
+    """
+    kaggle_dir = RAW_DIR / "KaggleWound"
+    nested = kaggle_dir / "Wound_dataset"
+    if not nested.is_dir():
+        return
+    logger.info("Flattening Kaggle data: %s → %s", nested, kaggle_dir)
+    for class_dir in sorted(nested.iterdir()):
+        if not class_dir.is_dir():
+            continue
+        target = kaggle_dir / class_dir.name
+        if target.exists():
+            # Already moved
+            continue
+        import shutil
+        shutil.move(str(class_dir), str(target))
+    # Clean up empty Wound_dataset dir
+    if not any(nested.iterdir()):
+        nested.rmdir()
+    logger.info("Kaggle structure normalized.")
 
 
 def scan_raw_data() -> pd.DataFrame:
@@ -394,6 +424,9 @@ def main() -> None:
 
     # 1. Download
     download_datasets(skip_download=args.skip_download)
+
+    # 1b. Normalize Kaggle directory structure (Wound_dataset/ → flat)
+    _normalize_kaggle_structure()
 
     # 2. Scan
     df = scan_raw_data()

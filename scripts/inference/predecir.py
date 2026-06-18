@@ -214,6 +214,218 @@ def superponer(imagen: np.ndarray, mascara: np.ndarray, alpha: float = 0.4, colo
     return cv2.addWeighted(imagen, 1 - alpha, overlay, alpha, 0)
 
 
+# ══════════════════════════════════════════════════════════════════════
+# Clasificador de tipo de herida (--tipo CHECKPOINT)
+# ══════════════════════════════════════════════════════════════════════
+
+_CLASSIFIER_CACHE: dict[str, tuple] = {}  # checkpoint_path -> (model, config)
+
+
+def _load_classifier(checkpoint_path: str) -> tuple:
+    """Load wound classifier from checkpoint. Cached per path."""
+    if checkpoint_path in _CLASSIFIER_CACHE:
+        return _CLASSIFIER_CACHE[checkpoint_path]
+
+    from src.config import ClassificationConfig
+
+    config = ClassificationConfig()
+
+    # Try to detect device
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+
+    # Load checkpoint first to detect num_classes from head shape
+    ckpt = torch.load(checkpoint_path, map_location=device, weights_only=False)
+
+    # Auto-detect num_classes from checkpoint
+    if "state_dict" in ckpt:
+        state = ckpt["state_dict"]
+        # Check head weight for number of classes
+        head_key = "model.head.1.weight" if "model.head.1.weight" in state else "head.1.weight"
+        if head_key in state:
+            detected_classes = state[head_key].shape[0]
+            if detected_classes != config.num_classes:
+                print(f"  [INFO] Checkpoint tiene {detected_classes} clases (config={config.num_classes}). "
+                      f"Usando {detected_classes}.")
+                config.num_classes = detected_classes
+    elif "head.1.weight" in ckpt:
+        detected_classes = ckpt["head.1.weight"].shape[0]
+        if detected_classes != config.num_classes:
+            print(f"  [INFO] Checkpoint tiene {detected_classes} clases (config={config.num_classes}). "
+                  f"Usando {detected_classes}.")
+            config.num_classes = detected_classes
+
+    model = create_model(
+        "wound_classifier",
+        num_classes=config.num_classes,
+        pretrained=False,
+        dropout=config.dropout,
+    )
+
+    if "state_dict" in ckpt:
+        state = ckpt["state_dict"]
+        # Strip Lightning prefix
+        state = {k.replace("model.", ""): v for k, v in state.items() if k.startswith("model.")}
+        model.load_state_dict(state, strict=False)
+    else:
+        model.load_state_dict(ckpt, strict=False)
+
+    model.to(device).eval()
+    _CLASSIFIER_CACHE[checkpoint_path] = (model, config)
+    print(f"  Clasificador cargado: {Path(checkpoint_path).name} -> {device.upper()} ({config.num_classes} clases)")
+    return model, config
+
+
+def _classify_instance(
+    image_bgr: np.ndarray,
+    instance_mask: np.ndarray,
+    classifier: torch.nn.Module,
+    config: "ClassificationConfig",
+) -> tuple[str, float]:
+    """Classify a single wound instance.
+
+    Creates a 4-channel masked crop (RGB + binary mask), passes through
+    classifier, returns (class_name, confidence).
+
+    Args:
+        image_bgr: Original BGR image.
+        instance_mask: Binary mask (0/255) for this instance, same size as image.
+        classifier: WoundClassifier model in eval mode.
+        config: ClassificationConfig with class_names and threshold.
+
+    Returns:
+        (class_name, confidence). class_name is "desconocido" if below threshold.
+    """
+    from albumentations.pytorch import ToTensorV2
+    import albumentations as A
+
+    # --- Create masked crop ---
+    # Find bounding box of instance
+    ys, xs = np.where(instance_mask > 0)
+    if len(ys) == 0:
+        return ("sin_deteccion", 0.0)
+
+    x1, x2 = int(xs.min()), int(xs.max()) + 1
+    y1, y2 = int(ys.min()), int(ys.max()) + 1
+
+    # Ensure minimum crop size
+    if (x2 - x1) < 10 or (y2 - y1) < 10:
+        x1 = max(0, x1 - 5)
+        x2 = min(image_bgr.shape[1], x2 + 5)
+        y1 = max(0, y1 - 5)
+        y2 = min(image_bgr.shape[0], y2 + 5)
+
+    crop_rgb = image_bgr[y1:y2, x1:x2]  # BGR
+    crop_rgb = cv2.cvtColor(crop_rgb, cv2.COLOR_BGR2RGB)
+    crop_mask = instance_mask[y1:y2, x1:x2]
+    crop_mask_f = (crop_mask > 127).astype(np.float32)
+
+    # Resize to classifier input size
+    H, W = int(config.image_size[0]), int(config.image_size[1])
+
+    # Image transforms
+    img_transform = A.Compose([
+        A.Resize(H, W),
+        A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
+        ToTensorV2(),
+    ])
+    img_tensor = img_transform(image=crop_rgb)["image"]  # (3, H, W)
+
+    # Mask transform (resize only)
+    mask_resized = cv2.resize(crop_mask_f, (W, H), interpolation=cv2.INTER_NEAREST)
+    mask_tensor = torch.from_numpy(mask_resized).unsqueeze(0).float()  # (1, H, W)
+
+    # 4-channel input
+    x = torch.cat([img_tensor, mask_tensor], dim=0).unsqueeze(0)  # (1, 4, H, W)
+
+    # --- Inference with CUDA OOM fallback ---
+    device = next(classifier.parameters()).device
+    try:
+        x = x.to(device)
+        with torch.inference_mode():
+            log_probs = classifier(x)
+        probs = torch.exp(log_probs).squeeze(0).cpu()
+    except RuntimeError as e:
+        if "out of memory" in str(e).lower():
+            print(f"  [WARN] CUDA OOM - fallback a CPU para esta instancia", file=sys.stderr)
+            classifier_cpu = classifier.cpu()
+            x_cpu = x.cpu()
+            with torch.inference_mode():
+                log_probs = classifier_cpu(x_cpu)
+            probs = torch.exp(log_probs).squeeze(0)
+            classifier.to(device)  # restore
+        else:
+            raise
+
+    max_conf, pred_idx = probs.max(dim=0)
+    max_conf_f = float(max_conf.item())
+    pred_idx_i = int(pred_idx.item())
+
+    # Abstention
+    if max_conf_f < config.confidence_threshold:
+        class_name = "desconocido"
+    else:
+        class_name = config.class_names[pred_idx_i]
+
+    return class_name, max_conf_f
+
+
+def _run_classification(
+    image_bgr: np.ndarray,
+    mascara_final: np.ndarray,
+    instancias_map: np.ndarray | None,
+    instancias_stats: list[dict] | None,
+    checkpoint_path: str,
+    output_dir: Path,
+    stem: str,
+) -> None:
+    """Classify wound instances and write _tipo.txt.
+
+    When mascara_final has zero positive pixels, writes SIN_DETECCION.
+    """
+    tipo_path = output_dir / f"{stem}_tipo.txt"
+
+    # Check if mask is empty
+    if (mascara_final > 0).sum() == 0:
+        tipo_path.write_text("SIN_DETECCION", encoding="utf-8")
+        print(f"\n[TIPO] Mascara vacia - SIN_DETECCION -> {tipo_path}")
+        return
+
+    # Load classifier
+    model, config = _load_classifier(checkpoint_path)
+
+    # Ensure we have instance map
+    if instancias_map is None or instancias_stats is None:
+        # Auto-generate watershed instances
+        print("[TIPO] Generando instancias via watershed (requerido para --tipo)")
+        instancias_map = watershed_instances(
+            mascara_final,
+            dist_threshold_ratio=0.3,
+            min_instance_area=50,
+            kernel_close=3,
+        )
+        instancias_stats = compute_instance_stats(instancias_map, image_shape=image_bgr.shape[:2])
+
+    if instancias_stats is None or len(instancias_stats) == 0:
+        tipo_path.write_text("SIN_DETECCION", encoding="utf-8")
+        print(f"[TIPO] Sin instancias detectadas -> {tipo_path}")
+        return
+
+    lines: list[str] = []
+    print(f"\n[TIPO] Clasificando {len(instancias_stats)} instancia(s) de herida:")
+
+    for inst in instancias_stats:
+        iid = inst["instance_id"]
+        # Create per-instance mask
+        inst_mask = (instancias_map == iid).astype(np.uint8) * 255
+
+        class_name, conf = _classify_instance(image_bgr, inst_mask, model, config)
+        lines.append(f"{iid}: {class_name} ({conf:.2f})")
+        print(f"  [{iid}] {class_name} (conf={conf:.2f})")
+
+    tipo_path.write_text("\n".join(lines), encoding="utf-8")
+    print(f"  -> {tipo_path}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Probar segmentacion de heridas en una imagen local")
     parser.add_argument("imagen", type=Path, help="Ruta a la imagen a analizar")
@@ -232,6 +444,7 @@ def main() -> None:
     parser.add_argument("--sam-model", type=str, default="sam2.1_hiera_l", choices=["sam2.1_hiera_l", "sam2.1_hiera_b+", "sam2.1_hiera_s"],
                         help="Modelo SAM2 (default: sam2.1_hiera_l = mas preciso)")
     parser.add_argument("--salida", type=Path, default=None, help="Directorio de salida (default: junto a la imagen)")
+    parser.add_argument("--tipo", type=Path, default=None, help="Checkpoint del clasificador de tipo de herida (best.pth)")
     args = parser.parse_args()
 
     if not args.imagen.exists():
@@ -241,6 +454,10 @@ def main() -> None:
     if not MODEL_PATH.exists():
         print(f"[ERROR] Modelo no encontrado: {MODEL_PATH}", file=sys.stderr)
         print(f"        Ejecuta primero: python scripts/6_train_unet_final.py", file=sys.stderr)
+        sys.exit(1)
+
+    if args.tipo is not None and not args.tipo.exists():
+        print(f"[ERROR] Checkpoint de clasificador no encontrado: {args.tipo}", file=sys.stderr)
         sys.exit(1)
 
     salida = args.salida or args.imagen.parent
@@ -323,6 +540,18 @@ def main() -> None:
 
     if args.sam and args.instancias:
         print("[WARN] Se activaron --instancias y --sam. Se usa --sam (mas preciso).")
+
+    # ── Clasificador de tipo (--tipo) ──────────────────────────────
+    if args.tipo is not None:
+        _run_classification(
+            image_bgr=original,
+            mascara_final=mascara_final,
+            instancias_map=instancias_map,
+            instancias_stats=instancias_stats,
+            checkpoint_path=str(args.tipo),
+            output_dir=salida,
+            stem=nombre,
+        )
 
     print("Guardando resultados...")
     COLORES = {

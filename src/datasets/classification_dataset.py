@@ -35,7 +35,8 @@ def _get_classification_transforms(
 
     Args:
         image_size: Target (height, width).
-        augment: If True, enable RandAugment-style spatial/color transforms.
+        augment: If True, enable RandAugment-inspired spatial/color transforms
+            (N=3 magnitude-equivalent: aggressive for small datasets).
 
     Returns:
         Albumentations Compose pipeline.
@@ -43,22 +44,42 @@ def _get_classification_transforms(
     transforms: list = []
 
     if augment:
-        # RandAugment-inspired: random spatial and color transforms
+        # RandAugment-inspired: aggressive transforms for small dataset
+        # Equivalent to N=3, M=9 in RandAugment terms
         transforms.extend([
             A.RandomResizedCrop(
                 size=(image_size[0], image_size[1]),
-                scale=(0.7, 1.0),
-                ratio=(0.75, 1.33),
+                scale=(0.6, 1.0),
+                ratio=(0.7, 1.4),
                 p=1.0,
             ),
             A.HorizontalFlip(p=0.5),
-            A.RandomRotate90(p=0.3),
-            A.ColorJitter(
-                brightness=0.2,
-                contrast=0.2,
-                saturation=0.2,
-                hue=0.1,
+            A.Rotate(limit=30, border_mode=0, p=0.5),
+            A.Affine(
+                translate_percent=(0.1, 0.1),
+                scale=(0.8, 1.2),
+                rotate=(-15, 15),
                 p=0.5,
+            ),
+            A.ColorJitter(
+                brightness=0.3,
+                contrast=0.3,
+                saturation=0.3,
+                hue=0.1,
+                p=0.7,
+            ),
+            A.RandomBrightnessContrast(
+                brightness_limit=0.2,
+                contrast_limit=0.2,
+                p=0.5,
+            ),
+            A.RandomGamma(gamma_limit=(80, 120), p=0.3),
+            A.GaussianBlur(blur_limit=(3, 5), p=0.2),
+            A.CoarseDropout(
+                num_holes_range=(1, 4),
+                hole_height_range=(0.05, 0.1),
+                hole_width_range=(0.05, 0.1),
+                p=0.3,
             ),
         ])
     else:
