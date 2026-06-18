@@ -174,4 +174,4 @@ def _create_deeplabv3plus(
 # ------------------------------------------------------------------ #
 # Import custom model modules to trigger @register_model side effects
 # ------------------------------------------------------------------ #
-from src.models import unet, attention_unet, nested_unet  # noqa: E402, F401, I001
+from src.models import unet, attention_unet, nested_unet, classifier  # noqa: E402, F401, I001

@@ -179,3 +179,62 @@ class InstanceConfig:
     yolo_model_path: str = ""
     yolo_image_size: int = 640
     yolo_confidence: float = 0.25
+
+
+@dataclass
+class ClassificationConfig:
+    """Configuration for wound type classifier.
+
+    Attributes:
+        num_classes: Number of wound type classes (default 7).
+        model_name: timm model identifier (default "efficientnet_b3").
+        image_size: Target (height, width) for classifier input.
+        batch_size: Batch size for training/inference.
+        learning_rate: AdamW learning rate.
+        class_names: Ordered list of Spanish wound type labels.
+        confidence_threshold: Min confidence to return a class; below → "desconocido".
+        top_k: Number of top predictions to return at inference.
+        use_mask: If True, use 4-channel input (RGB + mask).
+        freeze_backbone: If True, freeze EfficientNet backbone during training.
+        checkpoint_path: Path to a trained classifier .pth checkpoint.
+        max_epochs: Maximum training epochs.
+        patience: Early-stopping patience on val macro-F1.
+        train_csv: Path to training split CSV.
+        val_csv: Path to validation split CSV.
+        test_csv: Path to test split CSV.
+        output_dir: Directory for checkpoints and logs.
+    """
+    num_classes: int = 7
+    model_name: str = "efficientnet_b3"
+    image_size: tuple[int, int] = (384, 384)
+    batch_size: int = 16
+    learning_rate: float = 1e-4
+    class_names: list[str] = field(default_factory=lambda: [
+        "raspón", "hematoma", "quemadura", "corte",
+        "laceración", "punción", "piel_sana",
+    ])
+    confidence_threshold: float = 0.5
+    top_k: int = 3
+    use_mask: bool = True
+    freeze_backbone: bool = False
+    checkpoint_path: Path | None = None
+    max_epochs: int = 50
+    patience: int = 10
+    train_csv: Path = field(default_factory=lambda: Path("data-clasificador/train.csv"))
+    val_csv: Path = field(default_factory=lambda: Path("data-clasificador/val.csv"))
+    test_csv: Path = field(default_factory=lambda: Path("data-clasificador/test.csv"))
+    output_dir: Path = field(default_factory=lambda: Path("models/classifier"))
+
+    def __post_init__(self) -> None:
+        """Resolve relative paths to absolute paths."""
+        project_root = Path(__file__).parent.parent
+        if self.checkpoint_path is not None and not self.checkpoint_path.is_absolute():
+            self.checkpoint_path = project_root / self.checkpoint_path
+        if not self.train_csv.is_absolute():
+            self.train_csv = project_root / self.train_csv
+        if not self.val_csv.is_absolute():
+            self.val_csv = project_root / self.val_csv
+        if not self.test_csv.is_absolute():
+            self.test_csv = project_root / self.test_csv
+        if not self.output_dir.is_absolute():
+            self.output_dir = project_root / self.output_dir
