@@ -108,6 +108,12 @@ models/unet_final.pth
 # Keep only the distributed best classifier checkpoint
 !models/classifier/best.pth
 
+# Generated pseudo-masks alongside original images
+*_mask.png
+
+# Inference result temporary directories
+scripts/inference/resultados_v*/
+
 # ============================================================
 # Jupyter
 # ============================================================

@@ -62,12 +62,14 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 class WoundDataModule(pl.LightningDataModule):
     """LightningDataModule for wound classification splits.
 
-    Loads from train.csv and val.csv, applies RandAugment to training set.
+    Loads from train.csv and val.csv, applies RandAugment (optionally
+    with domain adaptation) to training set.
     """
 
-    def __init__(self, config: ClassificationConfig):
+    def __init__(self, config: ClassificationConfig, domain_adapt: bool = True):
         super().__init__()
         self.cfg = config
+        self.domain_adapt = domain_adapt
         self.train_dataset: Optional[ClassificationDataset] = None
         self.val_dataset: Optional[ClassificationDataset] = None
 
@@ -79,6 +81,7 @@ class WoundDataModule(pl.LightningDataModule):
                 image_size=self.cfg.image_size,
                 use_mask=self.cfg.use_mask,
                 augment=True,
+                domain_adapt=self.domain_adapt,
             )
             self.val_dataset = ClassificationDataset(
                 csv_path=self.cfg.val_csv,
@@ -421,6 +424,23 @@ def parse_args() -> argparse.Namespace:
         "--accumulate", type=int, default=2,
         help="Gradient accumulation steps",
     )
+    parser.add_argument(
+        "--domain-adapt", action="store_true", default=True,
+        help="Enable aggressive RandomResizedCrop (scale 0.3-0.8) to simulate "
+             "pipeline bbox crops (default: True). Use --no-domain-adapt to disable.",
+    )
+    parser.add_argument(
+        "--no-domain-adapt", action="store_false", dest="domain_adapt",
+        help="Disable domain-adapted augmentations (use standard scale 0.6-1.0)",
+    )
+    parser.add_argument(
+        "--dropout", type=float, default=0.4,
+        help="Dropout probability before classification head (default: 0.4)",
+    )
+    parser.add_argument(
+        "--label-smoothing", type=float, default=0.1,
+        help="Label smoothing factor for CrossEntropyLoss (default: 0.1)",
+    )
     return parser.parse_args()
 
 
@@ -458,6 +478,8 @@ def main() -> None:
         accumulation_steps=args.accumulate,
         use_mask=not args.no_mask,
         freeze_backbone_epochs=0 if args.no_freeze else args.freeze_epochs,
+        dropout=args.dropout,
+        label_smoothing=args.label_smoothing,
     )
 
     # Auto-detect num_classes from CSV
@@ -469,7 +491,7 @@ def main() -> None:
     config.output_dir.mkdir(parents=True, exist_ok=True)
 
     # Data
-    dm = WoundDataModule(config)
+    dm = WoundDataModule(config, domain_adapt=args.domain_adapt)
     dm.setup("fit")
 
     # Model
@@ -513,8 +535,8 @@ def main() -> None:
                 config.batch_size * config.accumulation_steps)
     logger.info("  Learning rate: %.2e", config.learning_rate)
     logger.info("  MixUp α: %.1f  CutMix α: %.1f", config.mixup_alpha, config.cutmix_alpha)
-    logger.info("  Label smoothing: %.1f  Dropout: %.1f",
-                config.label_smoothing, config.dropout)
+    logger.info("  Label smoothing: %.2f  Dropout: %.2f  DomainAdapt: %s",
+                config.label_smoothing, config.dropout, args.domain_adapt)
     logger.info("  Freeze backbone: %d epochs", config.freeze_backbone_epochs)
     logger.info("  Muestras train: %d  val: %d",
                 len(dm.train_dataset), len(dm.val_dataset))  # type: ignore[arg-type]

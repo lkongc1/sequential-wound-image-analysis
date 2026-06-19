@@ -30,6 +30,7 @@ _IMAGENET_STD = (0.229, 0.224, 0.225)
 def _get_classification_transforms(
     image_size: Tuple[int, int] = (384, 384),
     augment: bool = False,
+    domain_adapt: bool = False,
 ) -> A.Compose:
     """Build albumentations transform pipeline for classification.
 
@@ -37,6 +38,9 @@ def _get_classification_transforms(
         image_size: Target (height, width).
         augment: If True, enable RandAugment-inspired spatial/color transforms
             (N=3 magnitude-equivalent: aggressive for small datasets).
+        domain_adapt: If True AND augment=True, use aggressive RandomResizedCrop
+            that simulates tight bounding-box crops the classifier sees in
+            production (YOLO bbox + 20% padding ≈ 30-50% of full image).
 
     Returns:
         Albumentations Compose pipeline.
@@ -44,12 +48,18 @@ def _get_classification_transforms(
     transforms: list = []
 
     if augment:
-        # RandAugment-inspired: aggressive transforms for small dataset
-        # Equivalent to N=3, M=9 in RandAugment terms
+        # RandomResizedCrop: domain-adapted vs standard scale
+        if domain_adapt:
+            # Simulate YOLO bbox crop + padding: 30-80% of image
+            crop_scale = (0.3, 0.8)
+        else:
+            # Standard RandAugment: keep most of the image
+            crop_scale = (0.6, 1.0)
+
         transforms.extend([
             A.RandomResizedCrop(
                 size=(image_size[0], image_size[1]),
-                scale=(0.6, 1.0),
+                scale=crop_scale,
                 ratio=(0.7, 1.4),
                 p=1.0,
             ),
@@ -107,6 +117,9 @@ class ClassificationDataset(Dataset):
         image_size: Target (height, width) for resizing.
         use_mask: If True, returns 4-channel (RGB + mask). If False, 3-channel.
         augment: If True, enable RandAugment transforms.
+        domain_adapt: If True AND augment=True, use aggressive RandomResizedCrop
+            (scale 0.3-0.8) simulating pipeline crops. If False, standard
+            RandAugment scale (0.6-1.0). Ignored if augment=False.
 
     Returns:
         Tuple of (tensor, label_index) where tensor shape is (C, H, W)
@@ -120,6 +133,7 @@ class ClassificationDataset(Dataset):
         image_size: Tuple[int, int] = (384, 384),
         use_mask: bool = False,
         augment: bool = False,
+        domain_adapt: bool = False,
     ) -> None:
         csv_path = Path(csv_path)
         if not csv_path.exists():
@@ -130,6 +144,7 @@ class ClassificationDataset(Dataset):
         self.image_size = image_size
         self.use_mask = use_mask
         self.augment = augment
+        self.domain_adapt = domain_adapt
 
         self._label_to_idx = {name: i for i, name in enumerate(class_names)}
 
@@ -142,17 +157,20 @@ class ClassificationDataset(Dataset):
             )
 
         # Build transform (applied per-sample since mask is conditional)
-        self._transform = _get_classification_transforms(image_size, augment=augment)
+        self._transform = _get_classification_transforms(
+            image_size, augment=augment, domain_adapt=domain_adapt,
+        )
         self._mask_transform = A.Compose([
             A.Resize(image_size[0], image_size[1]),
         ])
 
         logger.info(
             "ClassificationDataset: %d samples, use_mask=%s, augment=%s, "
-            "classes=%s",
+            "domain_adapt=%s, classes=%s",
             len(self.df),
             use_mask,
             augment,
+            domain_adapt,
             class_names,
         )
 
@@ -175,7 +193,15 @@ class ClassificationDataset(Dataset):
                 mask_path = Path(str(mask_path_raw))
                 if not mask_path.exists():
                     raise FileNotFoundError(f"Mask not found: {mask_path}")
-                mask = cv2.imread(str(mask_path), cv2.IMREAD_GRAYSCALE)
+                # Unicode-safe mask loading (cv2.imread fails on non-ASCII paths)
+                try:
+                    mask = cv2.imread(str(mask_path), cv2.IMREAD_GRAYSCALE)
+                    if mask is None:
+                        raw = np.fromfile(str(mask_path), dtype=np.uint8)
+                        mask = cv2.imdecode(raw, cv2.IMREAD_GRAYSCALE)
+                except Exception:
+                    raw = np.fromfile(str(mask_path), dtype=np.uint8)
+                    mask = cv2.imdecode(raw, cv2.IMREAD_GRAYSCALE)
                 if mask is None:
                     raise FileNotFoundError(f"Mask corrupted: {mask_path}")
                 mask = (mask > 127).astype(np.float32)
