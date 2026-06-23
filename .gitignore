@@ -91,10 +91,10 @@ data-clasificador/raw/
 !data-clasificador/test.csv
 
 # ============================================================
-# Models — local checkpoints and training artifacts
+# Models — checkpoints and training artifacts
 # ============================================================
+# Ignorar checkpoints de entrenamiento y screening (son grandes, regenerables)
 models/checkpoints/
-models/comparativa/
 models/general/
 models/screening/
 models/classifier/*.ckpt
@@ -102,12 +102,13 @@ models/classifier/last*.ckpt
 models/classifier/logs/
 models/classifier/best-epoch*/
 models/classifier/v*/
-models/attention_unet_final.pth
-models/deeplabv3_final.pth
-models/nested_unet_final.pth
-models/unet_final.pth
 
-# Keep only the distributed best classifier checkpoint
+# SAM2 descarga pesos automáticamente (~900MB)
+models/sam2/
+
+# Trackear solo modelos de comparativa (usados para evaluación)
+# models/comparativa/ NO está ignorado — se trackea completo
+# y el mejor checkpoint del clasificador
 !models/classifier/best.pth
 
 # Generated pseudo-masks alongside original images
