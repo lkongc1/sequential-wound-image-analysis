@@ -369,7 +369,7 @@ class TestClassificationConfig:
         assert cfg.confidence_threshold == 0.5
         assert cfg.top_k == 3
         assert cfg.use_mask is True
-        assert cfg.batch_size == 16
+        assert cfg.batch_size == 32
         assert cfg.learning_rate == 1e-4
         assert len(cfg.class_names) == 7
         assert cfg.class_names[0] == "raspón"
