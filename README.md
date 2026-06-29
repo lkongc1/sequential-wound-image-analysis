@@ -4,6 +4,17 @@ Sistema de deteccion, segmentacion y clasificacion de heridas mediante tecnicas 
 
 Tesis: *"Deteccion y clasificacion de los tipos de heridas mediante tecnicas de vision computacional"*
 
+## Pipeline
+
+```
+  +--------+     +------------------+     +-------------------+     +--------------+
+  | INPUT  | --> |   SEGMENTACION   | --> |   CLASIFICACION   | --> |  PREDICCION  |
+  | imagen |     | U-Net / FPN /    |     | EfficientNet-B3   |     | tipo + area  |
+  | clinica|     | DeepLabV3+ /     |     | 7 clases de       |     | + overlay    |
+  |        |     | YOLO / SAM2      |     | herida            |     | + metricas   |
+  +--------+     +------------------+     +-------------------+     +--------------+
+```
+
 ## Caracteristicas
 
 - Segmentacion semantica con 12 arquitecturas (U-Net, FPN, DeepLabV3+ combinadas con ResNet, ResNeXt, EfficientNet, SegFormer)
@@ -13,6 +24,31 @@ Tesis: *"Deteccion y clasificacion de los tipos de heridas mediante tecnicas de 
 - API REST con FastAPI para diagnostico
 - Entrenamiento distribuido con Dask
 - Pipeline de datos reproducible: descarga, construccion, EDA, integracion de datasets externos
+
+## Resultados
+
+### Screening de arquitecturas (20 epocas)
+
+| Arquitectura | Encoder | Dice | IoU | Parametros | Tiempo (min) |
+|-------------|---------|------|-----|------------|-------------|
+| UNet + SegFormer | mit_b2 | 0.8893 | 0.8061 | 27.5M | 34.3 |
+| FPN + SegFormer | mit_b2 | 0.8816 | 0.7934 | 26.1M | 28.7 |
+| UNet + EfficientNet-B3 | efficientnet-b3 | 0.8840 | 0.7981 | 13.2M | 34.5 |
+| FPN + EfficientNet-B3 | efficientnet-b3 | 0.8749 | 0.7827 | 12.5M | 26.6 |
+| DeepLabV3Plus + EfficientNet-B3 | efficientnet-b3 | 0.8699 | 0.7757 | 11.7M | 34.0 |
+| FPN + ResNeXt50 | resnext50_32x4d | 0.8796 | 0.7907 | 25.6M | 32.1 |
+| DeepLabV3 + ResNeXt50 | resnext50_32x4d | 0.8772 | 0.7867 | 39.1M | 133.7 |
+| UNet + ResNeXt50 | resnext50_32x4d | 0.8766 | 0.7864 | 32.0M | 39.3 |
+| DeepLabV3Plus + ResNeXt50 | resnext50_32x4d | 0.8754 | 0.7845 | 26.1M | 34.5 |
+| DeepLabV3Plus + ResNet101 | resnet101 | 0.8705 | 0.7767 | 45.7M | 38.5 |
+| FPN + ResNet101 | resnet101 | 0.8675 | 0.7721 | 45.1M | 35.5 |
+| UNet + ResNet101 | resnet101 | 0.8650 | 0.7692 | 51.5M | 41.9 |
+
+### Modelo final (150 epocas)
+
+| Modelo | Encoder | Dice | F1 | Accuracy | Precision | Recall |
+|--------|---------|------|-----|----------|-----------|--------|
+| U-Net | ResNet50 (ImageNet) | 0.8927 | 0.8927 | 0.9927 | 0.9137 | 0.8726 |
 
 ## Estructura del proyecto
 
@@ -89,6 +125,15 @@ python scripts/inference/demo_watershed.py imagen.png --threshold 0.4
 python scripts/inference/predict_hybrid.py imagen.png
 ```
 
+### Prediccion para presentaciones (overlay azul)
+
+```bash
+python scripts/inference/predict_presentation.py imagen.jpg
+python scripts/inference/predict_presentation.py imagen.jpg --title "Resultado"
+```
+
+Genera una imagen con overlay azul, bounding box, panel de metricas y diagrama del pipeline. Ideal para presentaciones y documentacion.
+
 ### API REST
 
 ```bash
@@ -144,16 +189,18 @@ python scripts/classification/train_classifier_dask.py  # Entrenamiento distribu
 python scripts/evaluation/evaluate_model.py
 ```
 
-## Model Zoo
+## Modelos disponibles
 
-| Modelo | Arquitectura | Encoder | Uso |
-|--------|-------------|---------|-----|
-| U-Net final | U-Net | ResNet50 | Segmentacion principal |
-| U-Net R18 | U-Net | ResNet18 | Heridas finas/lineales |
-| Clasificador | EfficientNet-B3 | - | 7 tipos de herida |
-| YOLO11-seg | YOLO11 | - | Instancias |
+| Modelo | Tipo | Parametros | Uso |
+|--------|------|------------|-----|
+| UNet + SegFormer | Segmentacion | 27.5M | Mejor Dice en screening |
+| UNet + EfficientNet-B3 | Segmentacion | 13.2M | Mejor balance tamano/rendimiento |
+| U-Net ResNet50 | Segmentacion | 32.6M | Modelo final (150 epocas) |
+| U-Net ResNet18 | Segmentacion | 31.1M | Heridas finas/lineales |
+| EfficientNet-B3 | Clasificacion | 12.2M | 7 tipos de herida |
+| YOLO11-seg | Instancias | 2.7M | Deteccion de instancias |
 
-12 modelos de screening disponibles en `models/screening/`.
+12 checkpoints de screening en `models/screening/`. Pesos trackeados con Git LFS.
 
 ## Tests
 
