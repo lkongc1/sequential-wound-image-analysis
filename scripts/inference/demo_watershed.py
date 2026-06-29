@@ -7,8 +7,8 @@ applies Watershed to separate touching regions into individual instances,
 computes per-instance statistics, and exports an overlay image + CSV.
 
 Usage:
-    python scripts/inference/watershed_instance_demo.py <image_path>
-    python scripts/inference/watershed_instance_demo.py wound.jpg --threshold 0.4 --output results/
+    python scripts/inference/demo_watershed.py <image_path>
+    python scripts/inference/demo_watershed.py wound.jpg --threshold 0.4 --output results/
 """
 import argparse
 import csv

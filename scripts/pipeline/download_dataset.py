@@ -33,9 +33,9 @@ def parse_args() -> argparse.Namespace:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python scripts/pipeline/1_download_dataset.py
-  python scripts/pipeline/1_download_dataset.py --data-dir ./data/raw --verbose
-  python scripts/pipeline/1_download_dataset.py --force
+  python scripts/pipeline/download_dataset.py
+  python scripts/pipeline/download_dataset.py --data-dir ./data/raw --verbose
+  python scripts/pipeline/download_dataset.py --force
         """,
     )
     parser.add_argument(

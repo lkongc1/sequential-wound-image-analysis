@@ -2,15 +2,15 @@
 """Entrena un modelo YOLO11n-seg para segmentacion de instancias de heridas.
 
 Requiere ultralytics instalado y datos preparados con:
-    python scripts/pipeline/8_prepare_yolo.py --segment
+    python scripts/pipeline/prepare_yolo.py --segment
 
 El modelo nano (yolo11n-seg.pt) se entrena con tamaño 640 y batch=16,
 diseñado para caber en ~8 GB de VRAM.
 
 Uso:
-    python scripts/training/train_yolo_seg.py
-    python scripts/training/train_yolo_seg.py --epochs 200 --batch 8
-    python scripts/training/train_yolo_seg.py --resume  # reanudar desde ultimo checkpoint
+    python scripts/training/train_yolo.py
+    python scripts/training/train_yolo.py --epochs 200 --batch 8
+    python scripts/training/train_yolo.py --resume  # reanudar desde ultimo checkpoint
 """
 import argparse
 import sys
@@ -115,7 +115,7 @@ def main() -> None:
     data_path = Path(args.data)
     if not data_path.exists():
         print(f"[ERROR] data.yaml no encontrado: {data_path}", file=sys.stderr)
-        print("        Ejecuta primero: python scripts/pipeline/8_prepare_yolo.py --segment", file=sys.stderr)
+        print("        Ejecuta primero: python scripts/pipeline/prepare_yolo.py --segment", file=sys.stderr)
         sys.exit(1)
 
     print("=" * 60)
