@@ -7,8 +7,8 @@ Con --tipo CHECKPOINT: clasifica cada bbox detectado por YOLO usando
 el clasificador de tipo de herida (4ch: RGB + mascara U-Net).
 
 Uso:
-    python scripts/inference/predecir_yolo_unet.py imagen.png
-    python scripts/inference/predecir_yolo_unet.py imagen.png --tipo models/classifier/best.pth
+    python scripts/inference/predict_hybrid.py imagen.png
+    python scripts/inference/predict_hybrid.py imagen.png --tipo models/classifier/best.pth
 """
 import argparse
 import sys

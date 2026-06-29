@@ -10,9 +10,9 @@ Estrategia:
   - Augmentacion pesada: ElasticTransform, GridDistortion, HSV, GaussNoise
 
 Uso:
-    python scripts/training/6_train_unet.py                        # ResNet50 (384x384, batch 16)
-    python scripts/training/6_train_unet.py --encoder resnet18     # ResNet18 (512x512, batch 24)
-    python scripts/training/6_train_unet.py --epochs 100 --lr 1e-4
+    python scripts/training/train_unet.py                        # ResNet50 (384x384, batch 16)
+    python scripts/training/train_unet.py --encoder resnet18     # ResNet18 (512x512, batch 24)
+    python scripts/training/train_unet.py --epochs 100 --lr 1e-4
 """
 
 from __future__ import annotations

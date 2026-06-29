@@ -2,8 +2,8 @@
 """Genera dataset YOLO desde las mascaras de segmentacion existentes.
 
 Uso:
-    python scripts/pipeline/8_prepare_yolo.py                         # solo bbox (original)
-    python scripts/pipeline/8_prepare_yolo.py --segment                # bbox + poligonos segmentacion
+    python scripts/pipeline/prepare_yolo.py                         # solo bbox (original)
+    python scripts/pipeline/prepare_yolo.py --segment                # bbox + poligonos segmentacion
 """
 import argparse
 import sys

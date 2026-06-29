@@ -5,7 +5,7 @@ CO2Wounds-V2: 607 máscaras binarias → integrar al dataset de segmentación
 Yasin: 431 imágenes clasificadas → guardar para fase de clasificación
 
 Uso:
-    python scripts/pipeline/10_integrate_new_datasets.py
+    python scripts/pipeline/integrate_datasets.py
 """
 
 from __future__ import annotations

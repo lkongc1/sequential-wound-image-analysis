@@ -10,8 +10,8 @@ majority classes to ~250/class, and produces a stratified 70/15/15
 train/val/test split.
 
 Usage:
-    python scripts/classification/download_classification_data.py
-    python scripts/classification/download_classification_data.py --skip-download  # use cached data only
+    python scripts/classification/download_data.py
+    python scripts/classification/download_data.py --skip-download  # use cached data only
 """
 from __future__ import annotations
 
