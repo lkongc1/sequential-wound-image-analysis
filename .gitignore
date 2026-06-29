@@ -1,0 +1,136 @@
+# ============================================================
+# Python
+# ============================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# ============================================================
+# Virtual Environment
+# ============================================================
+.venv/
+venv/
+env/
+ENV/
+
+# ============================================================
+# IDE & Editor
+# ============================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ============================================================
+# Environment & Secrets
+# ============================================================
+.env
+.env.*
+!.env.example
+credentials.json
+secrets/
+
+# ============================================================
+# AI Assistant Configs (personal, machine-specific)
+# ============================================================
+.claude/
+.atl/
+
+# ============================================================
+# CI (personal — managed by repo owner)
+# ============================================================
+.github/
+
+# ============================================================
+# DVC (team-specific GCS bucket config)
+# ============================================================
+.dvc/
+
+# ============================================================
+# OS Files
+# ============================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============================================================
+# Generated Outputs
+# ============================================================
+output/
+wound-dataset/
+
+# ============================================================
+# Personal Test Files & Inference Outputs
+# ============================================================
+scripts/inference/miImage.jpg
+scripts/inference/resultados/
+scripts/inference/miImage_*
+scripts/inference/comparacion_screening/
+
+# ============================================================
+# Data — Generated / Raw (excluded)
+# These directories are populated by scripts 1-2
+# ============================================================
+data/raw/
+data/external/
+data/features/
+data/interim/
+data/processed/test/
+data/processed/train/
+data/processed/val/
+data/reports/
+data/classification/
+data/yolo/
+data-clasificador/raw/
+
+# Keep only the processed CSVs needed for training
+!data-clasificador/train.csv
+!data-clasificador/val.csv
+!data-clasificador/test.csv
+
+# ============================================================
+# Models — checkpoints and training artifacts
+# ============================================================
+# Ignorar checkpoints de entrenamiento y screening (son grandes, regenerables)
+models/checkpoints/
+models/general/
+models/screening/
+models/classifier/*.ckpt
+models/classifier/last*.ckpt
+models/classifier/logs/
+models/classifier/best-epoch*/
+models/classifier/v*/
+
+# SAM2 descarga pesos automáticamente (~900MB)
+models/sam2/
+
+# Trackear solo modelos de comparativa (usados para evaluación)
+# models/comparativa/ NO está ignorado — se trackea completo
+# y el mejor checkpoint del clasificador
+!models/classifier/best.pth
+
+# Generated pseudo-masks alongside original images
+*_mask.png
+
+# Inference result temporary directories
+scripts/inference/resultados_v*/
+
+# ============================================================
+# Jupyter
+# ============================================================
+.ipynb_checkpoints/
+*.ipynb
+
+# ============================================================
+# Training Artifacts
+# ============================================================
+logs/
+runs/
+*.ckpt

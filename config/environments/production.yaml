@@ -1,0 +1,31 @@
+# Production environment configuration
+data_dir: data/raw/data_wound_seg
+output_dir: output/train_results
+model_dir: models
+metadata_path: data/metadata_enriched.csv
+
+training:
+  encoder: resnet34
+  encoder_weights: imagenet
+  image_size: 512
+  batch_size: 12
+  accumulation_steps: 8
+  epochs: 200
+  learning_rate: 3e-5
+  patience: 25
+  device: cuda
+
+inference:
+  batch_size: 32
+  threshold: 0.5
+  postprocess_min_area: 100
+
+logging:
+  level: WARNING
+  log_dir: logs/training
+
+# FDA compliance
+compliance:
+  audit_trail: true
+  model_versioning: true
+  data_validation: strict

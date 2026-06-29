@@ -1,0 +1,41 @@
+# Model hyperparameters configuration
+models:
+  unet_mini:
+    in_channels: 3
+    out_channels: 1
+    description: "Lightweight U-Net for 8GB VRAM GPUs"
+
+  unet:
+    encoder: resnet34
+    encoder_weights: imagenet
+    in_channels: 3
+    out_channels: 1
+    activation: null
+    description: "Standard U-Net with ImageNet pretrained encoder"
+
+  attention_unet:
+    in_channels: 3
+    out_channels: 1
+    description: "U-Net with attention gates"
+
+  nested_unet:
+    in_channels: 3
+    out_channels: 1
+    deep_supervision: false
+    description: "U-Net++ with nested skip connections"
+
+losses:
+  bce_dice:
+    bce_weight: 0.3
+    dice_weight: 0.7
+    description: "Combined BCE + Dice loss"
+
+  tversky:
+    alpha: 0.7
+    beta: 0.3
+    description: "Tversky loss for severe class imbalance"
+
+  focal:
+    alpha: 0.25
+    gamma: 2.0
+    description: "Focal loss for class imbalance"
