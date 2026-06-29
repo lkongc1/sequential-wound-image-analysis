@@ -7,7 +7,7 @@ contraste, porcentaje de herida, area), filtra muestras invalidas
 y aplica split patient-aware. Genera data/processed/dataset_final.csv
 
 Uso:
-    python scripts/pipeline/2_build_dataset.py
+    python scripts/pipeline/build_dataset.py
 """
 from __future__ import annotations
 
@@ -192,7 +192,7 @@ def main() -> None:
                 len(df_clean[df_clean["split"] == "test"]))
     logger.info("    Fuentes: %s", ", ".join(sorted(df_clean["source"].unique())))
     logger.info("    Guardado: %s", OUTPUT)
-    logger.info("  Siguiente: python scripts/pipeline/3_eda.py")
+    logger.info("  Siguiente: python scripts/pipeline/explore_data.py")
     logger.info("=" * 55)
 
 

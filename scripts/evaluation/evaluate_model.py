@@ -5,7 +5,7 @@ Metricas: Matriz de confusion, Accuracy, Precision, Recall, Specificity,
           F1-Score, F2-Score, Dice, IoU, NPV, ROC-AUC.
 
 Uso:
-    python scripts/evaluation/7_evaluate_pretrained.py
+    python scripts/evaluation/evaluate_model.py
 """
 
 from __future__ import annotations

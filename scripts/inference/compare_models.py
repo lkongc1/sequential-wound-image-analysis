@@ -6,7 +6,7 @@ Para cada modelo, predice la máscara y guarda:
   - Un CSV con todas las métricas calculadas
 
 Uso:
-    python scripts/inference/comparar_modelos_screening.py [--imagen ruta] [--salida dir]
+    python scripts/inference/compare_models.py [--imagen ruta] [--salida dir]
 """
 
 import sys

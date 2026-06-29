@@ -7,9 +7,9 @@ Carga un modelo YOLO11-seg entrenado y genera:
   - CSV con estadisticas por instancia (mismo formato que Phase 1 watershed)
 
 Uso:
-    python scripts/inference/predecir_yolo_seg.py imagen.jpg
-    python scripts/inference/predecir_yolo_seg.py imagen.jpg --conf 0.5
-    python scripts/inference/predecir_yolo_seg.py imagen.jpg --salida resultados/
+    python scripts/inference/predict_yolo.py imagen.jpg
+    python scripts/inference/predict_yolo.py imagen.jpg --conf 0.5
+    python scripts/inference/predict_yolo.py imagen.jpg --salida resultados/
 """
 from __future__ import annotations
 
@@ -117,7 +117,7 @@ def main() -> None:
 
     if not args.modelo.exists():
         print(f"[ERROR] Modelo no encontrado: {args.modelo}", file=sys.stderr)
-        print("        Ejecuta primero: python scripts/training/train_yolo_seg.py", file=sys.stderr)
+        print("        Ejecuta primero: python scripts/training/train_yolo.py", file=sys.stderr)
         sys.exit(1)
 
     salida = args.salida or args.imagen.parent
