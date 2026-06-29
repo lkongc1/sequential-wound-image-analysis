@@ -9,7 +9,7 @@ import time
 from pathlib import Path
 from typing import Optional
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
@@ -33,9 +33,9 @@ def parse_args() -> argparse.Namespace:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python scripts/1_download_dataset.py
-  python scripts/1_download_dataset.py --data-dir ./data/raw --verbose
-  python scripts/1_download_dataset.py --force
+  python scripts/pipeline/1_download_dataset.py
+  python scripts/pipeline/1_download_dataset.py --data-dir ./data/raw --verbose
+  python scripts/pipeline/1_download_dataset.py --force
         """,
     )
     parser.add_argument(

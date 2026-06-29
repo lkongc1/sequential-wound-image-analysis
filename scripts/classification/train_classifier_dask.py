@@ -7,11 +7,11 @@ disponible (GPU/CPU). Cada worker de Dask carga y aplica transforms de forma
 independiente, evitando el GIL de Python en Windows.
 
 Uso:
-    python scripts/train_classifier_dask.py
-    python scripts/train_classifier_dask.py --dask-workers 6
-    python scripts/train_classifier_dask.py --dask-scheduler tcp://192.168.1.100:8786
-    python scripts/train_classifier_dask.py --epochs 30 --lr 5e-5
-    python scripts/train_classifier_dask.py --dry-run
+    python scripts/classification/train_classifier_dask.py
+    python scripts/classification/train_classifier_dask.py --dask-workers 6
+    python scripts/classification/train_classifier_dask.py --dask-scheduler tcp://192.168.1.100:8786
+    python scripts/classification/train_classifier_dask.py --epochs 30 --lr 5e-5
+    python scripts/classification/train_classifier_dask.py --dry-run
 """
 from __future__ import annotations
 
@@ -36,7 +36,7 @@ import pytorch_lightning as pl
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from pytorch_lightning.loggers import TensorBoardLogger
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.config import ClassificationConfig

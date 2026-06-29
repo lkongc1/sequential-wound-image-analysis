@@ -5,7 +5,7 @@ Metricas: Matriz de confusion, Accuracy, Precision, Recall, Specificity,
           F1-Score, F2-Score, Dice, IoU, NPV, ROC-AUC.
 
 Uso:
-    python scripts/7_evaluate_pretrained.py
+    python scripts/evaluation/7_evaluate_pretrained.py
 """
 
 from __future__ import annotations
@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 import time
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 import numpy as np

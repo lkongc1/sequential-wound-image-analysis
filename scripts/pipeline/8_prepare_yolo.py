@@ -2,20 +2,20 @@
 """Genera dataset YOLO desde las mascaras de segmentacion existentes.
 
 Uso:
-    python scripts/8_prepare_yolo.py                         # solo bbox (original)
-    python scripts/8_prepare_yolo.py --segment                # bbox + poligonos segmentacion
+    python scripts/pipeline/8_prepare_yolo.py                         # solo bbox (original)
+    python scripts/pipeline/8_prepare_yolo.py --segment                # bbox + poligonos segmentacion
 """
 import argparse
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 import cv2
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-PROJECT = Path(__file__).parent.parent
+PROJECT = Path(__file__).parent.parent.parent
 YOLO_DIR = PROJECT / "data" / "yolo"
 
 

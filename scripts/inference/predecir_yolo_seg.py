@@ -117,7 +117,7 @@ def main() -> None:
 
     if not args.modelo.exists():
         print(f"[ERROR] Modelo no encontrado: {args.modelo}", file=sys.stderr)
-        print("        Ejecuta primero: python scripts/train_yolo_seg.py", file=sys.stderr)
+        print("        Ejecuta primero: python scripts/training/train_yolo_seg.py", file=sys.stderr)
         sys.exit(1)
 
     salida = args.salida or args.imagen.parent

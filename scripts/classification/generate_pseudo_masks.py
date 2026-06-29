@@ -12,9 +12,9 @@ existing U-Net/FPN model provide real spatial attention signal, improving
 classifier accuracy by ~3-5% macro-F1.
 
 Usage:
-    python scripts/generate_pseudo_masks.py
-    python scripts/generate_pseudo_masks.py --model models/screening/FPN_EfficientNetB3_best.pth
-    python scripts/generate_pseudo_masks.py --batch-size 8 --dry-run
+    python scripts/classification/generate_pseudo_masks.py
+    python scripts/classification/generate_pseudo_masks.py --model models/screening/FPN_EfficientNetB3_best.pth
+    python scripts/classification/generate_pseudo_masks.py --batch-size 8 --dry-run
 """
 from __future__ import annotations
 
@@ -30,7 +30,7 @@ import pandas as pd
 import torch
 from tqdm import tqdm
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.datasets.wound_dataset import get_default_transforms
