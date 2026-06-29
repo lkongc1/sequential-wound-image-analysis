@@ -184,5 +184,5 @@ class DatasetAuditor:
         self.process_all_files()
         self.visualizer.visualize(self.df_metadata, skip_plots=skip_plots)
         self.csv_reporter.generate(self.df_metadata, self.config.output_dir)
-        logger.info("✅ Audit pipeline completed")
+        logger.info("Audit pipeline completed")
         return self.df_metadata if self.df_metadata is not None else pd.DataFrame()

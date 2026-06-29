@@ -44,7 +44,7 @@ class WoundDistributionVisualizer:
             return
 
         self._plot_wound_analysis(df)
-        logger.info(f"📊 Saved figures to {self.output_dir}")
+        logger.info(f"Saved figures to {self.output_dir}")
 
     def _plot_wound_analysis(self, df: pd.DataFrame) -> None:
         """Generate comprehensive wound analysis plots.
