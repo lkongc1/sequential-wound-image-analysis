@@ -2,11 +2,11 @@
 """Agrega imagenes negativas (piel sana) de AZH BG al dataset + crea mascaras vacias."""
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 import cv2, numpy as np, pandas as pd
 
-PROJECT = Path(__file__).parent.parent
+PROJECT = Path(__file__).parent.parent.parent
 BG_DIR = PROJECT / "data" / "raw" / "AZH_Wound" / "Train" / "BG"
 OUT_DIR = PROJECT / "data" / "processed" / "train"
 OUT_DIR.mkdir(parents=True, exist_ok=True)

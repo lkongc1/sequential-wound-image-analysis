@@ -12,10 +12,10 @@ Fine-tunes EfficientNet-B3 on 6/7-class wound type data with:
 - TensorBoard logging: per-class F1, confusion matrix
 
 Usage:
-    python scripts/train_classifier.py
-    python scripts/train_classifier.py --epochs 30 --lr 5e-5
-    python scripts/train_classifier.py --csv-prefix data-clasificador
-    python scripts/train_classifier.py --dry-run  # 1 epoch smoke test
+    python scripts/classification/train_classifier.py
+    python scripts/classification/train_classifier.py --epochs 30 --lr 5e-5
+    python scripts/classification/train_classifier.py --csv-prefix data-clasificador
+    python scripts/classification/train_classifier.py --dry-run  # 1 epoch smoke test
 """
 from __future__ import annotations
 
@@ -37,7 +37,7 @@ import pytorch_lightning as pl
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from pytorch_lightning.loggers import TensorBoardLogger
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.config import ClassificationConfig

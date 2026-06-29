@@ -15,7 +15,7 @@ import argparse
 import sys
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 import numpy as np
@@ -36,8 +36,8 @@ def build_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Ejemplos:
-  python scripts/3_eda.py
-  python scripts/3_eda.py --csv data/processed/dataset_final.csv --output reports/eda.txt
+  python scripts/pipeline/3_eda.py
+  python scripts/pipeline/3_eda.py --csv data/processed/dataset_final.csv --output reports/eda.txt
         """.strip(),
     )
     parser.add_argument(
@@ -377,7 +377,7 @@ def main() -> None:
     if not csv_path.exists():
         print(f"\n[ERROR] No se encontro el archivo: {csv_path}", file=sys.stderr)
         print(f"        Asegurate de que el dataset fue generado (e.g., ejecuta 2_preprocess.py primero).", file=sys.stderr)
-        print(f"        Puedes especificar otra ruta con: python scripts/3_eda.py --csv <ruta>", file=sys.stderr)
+        print(f"        Puedes especificar otra ruta con: python scripts/pipeline/3_eda.py --csv <ruta>", file=sys.stderr)
         sys.exit(1)
 
     # Redirigir salida a archivo si se pidio

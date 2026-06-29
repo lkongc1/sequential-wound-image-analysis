@@ -113,7 +113,7 @@ def test_imports():
     # Test new scripts
     print("\n[SCRIPTS]")
     scripts = [
-        "scripts/1_download_dataset.py",
+        "scripts/pipeline/1_download_dataset.py",
         "scripts/2_audit_dataset.py",
         "scripts/3_visualize_data.py",
     ]
