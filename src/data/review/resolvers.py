@@ -161,7 +161,7 @@ class MaskResolver:
         default_factory=lambda: ("_mask", "masks/", "_masks/", "mask_")
     )
     mask_extensions: tuple[str, ...] = (".png", ".jpg", ".jpeg", ".bmp", ".tiff")
-    # 🔧 FIX: Changed Dict[str, Path] → Dict[str, Optional[Path]] to allow None values
+    # FIX: Changed Dict[str, Path] → Dict[str, Optional[Path]] to allow None values
     _mask_cache: Dict[str, Optional[Path]] = field(default_factory=dict, repr=False)
 
     def resolve(self, image_path: Path) -> Optional[Path]:
@@ -214,7 +214,7 @@ class MaskResolver:
             if parent_masks.exists():
                 mask_path = parent_masks
 
-        # 🔧 FIX: Now safe to store Optional[Path] in _mask_cache
+        # FIX: Now safe to store Optional[Path] in _mask_cache
         self._mask_cache[cache_key] = mask_path
         return mask_path
 
