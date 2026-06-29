@@ -7,13 +7,27 @@ Tesis: *"Deteccion y clasificacion de los tipos de heridas mediante tecnicas de 
 ## Pipeline
 
 ```
-  +--------+     +------------------+     +-------------------+     +--------------+
-  | INPUT  | --> |   SEGMENTACION   | --> |   CLASIFICACION   | --> |  PREDICCION  |
-  | imagen |     | U-Net / FPN /    |     | EfficientNet-B3   |     | tipo + area  |
-  | clinica|     | DeepLabV3+ /     |     | 7 clases de       |     | + overlay    |
-  |        |     | YOLO / SAM2      |     | herida            |     | + metricas   |
-  +--------+     +------------------+     +-------------------+     +--------------+
+                         SEQUENTIAL WOUND IMAGE ANALYSIS
+                         ==============================
+
+  ┌──────────┐      ┌─────────────────┐      ┌──────────────────┐      ┌──────────────┐
+  │          │      │                 │      │                  │      │              │
+  │  INPUT   │      │  SEGMENTACION   │      │  CLASIFICACION   │      │  PREDICCION  │
+  │          │      │                 │      │                  │      │              │
+  │  Imagen  │ ───> │  U-Net ResNet50 │ ───> │  EfficientNet-B3 │ ───> │  Tipo herida │
+  │  clinica │      │  FPN / DeepLab  │      │  7 categorias:   │      │  Area (px)   │
+  │  (RGB)   │      │  YOLO11 / SAM2  │      │  raspon          │      │  Confianza   │
+  │          │      │                 │      │  hematoma        │      │  Overlay     │
+  │          │      │  Salida: mascara │      │  quemadura       │      │  azul        │
+  │          │      │  binaria (0/1)   │      │  corte           │      │              │
+  │          │      │                 │      │  laceracion      │      │              │
+  │          │      │                 │      │  puncion         │      │              │
+  │          │      │                 │      │  piel sana       │      │              │
+  └──────────┘      └─────────────────┘      └──────────────────┘      └──────────────┘
+
+  Modelos: 12 arquitecturas evaluadas  |  Mejor: UNet+SegFormer Dice=0.8893  |  150 epocas finales
 ```
+
 
 ## Caracteristicas
 
