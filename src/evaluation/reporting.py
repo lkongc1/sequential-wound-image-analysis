@@ -133,7 +133,7 @@ class ComparativeReporter:
         threshold_rows = []
         for metric_name, threshold in CLINICAL_THRESHOLDS.items():
             value = best_metrics.get(metric_name, 0.0)
-            passed = "✅" if value >= threshold else "❌"
+            passed = "PASS" if value >= threshold else "FAIL"
             threshold_rows.append(f"| {metric_name.capitalize()} | ≥ {threshold:.2f} | {value:.4f} | {passed} |")
 
         lines = [
