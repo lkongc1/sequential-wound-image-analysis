@@ -1,1 +1,1 @@
-"""Utilities: logging, config loader, GPU utils."""
+"""Utilities: structured logger, GPU detection."""

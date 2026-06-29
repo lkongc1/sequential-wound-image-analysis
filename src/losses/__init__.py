@@ -1,1 +1,1 @@
-"""Loss functions: Dice, BCE+Dice, Focal, Tversky, Lovasz."""
+"""Loss functions: Dice, Focal, Tversky."""
