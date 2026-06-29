@@ -81,13 +81,13 @@ class InteractiveHTMLReporter:
                     except ValueError:
                         pass
 
-        # 🔧 FIX: Use pandas Series methods safely with type hints
+        # FIX: Use pandas Series methods safely with type hints
         wound_min = 0.0
         wound_max = 100.0
         bright_min = 0
         bright_max = 255
 
-        # 🔧 FIX: Use pd.Series with explicit type handling for min/max
+        # FIX: Use pd.Series with explicit type handling for min/max
         if "wound_percentage" in df.columns:
             wound_series: pd.Series = df["wound_percentage"].dropna()
             if not wound_series.empty:

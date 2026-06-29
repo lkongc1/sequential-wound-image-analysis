@@ -53,7 +53,7 @@ class CSVReporter(BaseReporter):
         available = [c for c in cols if c in df.columns]
         df[available].to_csv(csv_path, index=False, encoding="utf-8")
 
-        logger.info(f"💾 Saved metadata CSV: {csv_path} ({len(df):,} records)")
+        logger.info(f"Saved metadata CSV: {csv_path} ({len(df):,} records)")
         return {"path": str(csv_path), "records": len(df)}
 
 
@@ -107,7 +107,7 @@ class JSONReporter(BaseReporter):
         with open(json_path, "w", encoding="utf-8") as f:
             json.dump(stats, f, indent=2, ensure_ascii=False)
 
-        logger.info(f"💾 Saved statistics JSON: {json_path}")
+        logger.info(f"Saved statistics JSON: {json_path}")
         return {"path": str(json_path), "stats": stats}
 
 
