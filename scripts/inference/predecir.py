@@ -44,7 +44,7 @@ TRANSFORM = get_default_transforms(IMAGE_SIZE)
 
 # ── Model registry: filename_pattern -> (factory_arch_name, encoder_name) ──
 # Uses the factory's create_model (which wraps SMP) for consistent loading.
-# Match the training config in scripts/11_screening_architectures.py
+# Match the training config in scripts/training/11_screening_architectures.py
 _MODEL_REGISTRY: dict[str, tuple[str, str]] = {
     "FPN_EfficientNetB3":      ("fpn", "efficientnet-b3"),
     "FPN_ResNet101":           ("fpn", "resnet101"),
@@ -464,7 +464,7 @@ def main() -> None:
 
     if not MODEL_PATH.exists():
         print(f"[ERROR] Modelo no encontrado: {MODEL_PATH}", file=sys.stderr)
-        print(f"        Ejecuta primero: python scripts/6_train_unet_final.py", file=sys.stderr)
+        print(f"        Ejecuta primero: python scripts/training/6_train_unet.py", file=sys.stderr)
         sys.exit(1)
 
     if args.tipo is not None and not args.tipo.exists():
