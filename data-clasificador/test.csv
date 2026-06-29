@@ -1,0 +1,195 @@
+image_path,label
+data\raw\basic_wound_classify\train\normal skin\depositphotos_466296536-stock-photo-soft-focused-human-skin-hairs_jpg.rf.kQLoa0mEwOZDcyvrNIap.jpg,piel_sana
+data\raw\basic_wound_classify\train\abrasion\istockphoto-905802242-612x612_jpg.rf.b1aJX7vHZ4qk5JUbBRPr.jpg,raspón
+data\raw\basic_wound_classify\train\normal skin\Healthy-skin_jpg.rf.pRmilOoPlT0INqbRs8B4.jpg,piel_sana
+data\raw\basic_wound_classify\test\normal skin\1000_F_431352648_03eETTYuIdDnt8lqKH5Tg6Za8TqD3nqt_jpg.rf.7UclVjYMp4f7ZyRwVwzc.jpg,piel_sana
+data\raw\basic_wound_classify\train\burn\IMG-20231230-WA0029_jpg.rf.XIlj8YlAgf85ZiXY2OVs.jpg,quemadura
+data\raw\basic_wound_classify\train\burn\fir_jpg.rf.5bjb41SJfuxeknfRVDzz.jpg,quemadura
+data\raw\basic_wound_classify\train\laceration\270_jpg.rf.l2hjE3pSyo6o14V9YfHJ.jpg,laceración
+data\raw\basic_wound_classify\train\abrasion\depositphotos_196338142-stock-photo-wound-scabs-knee-woman_jpg.rf.UOQXYP6pvduF6mTU0Z5K.jpg,raspón
+data\raw\basic_wound_classify\test\burn\IMG-20231230-WA0016_jpg.rf.7S9PgzHDNRnNTyghH3wB.jpg,quemadura
+data\raw\basic_wound_classify\train\bruise\bruise17_jpg.rf.lnjUX1yQJqh9VwpySz1f.jpg,hematoma
+data\raw\basic_wound_classify\train\burn\R-1-_jpeg_jpg.rf.BXleSDMkR68eRsRqfbm4.jpg,quemadura
+data-clasificador\raw\KaggleWound\Ingrown_nails\ingrown_nail (11).jpg,corte
+data\raw\basic_wound_classify\train\normal skin\134_jpg.rf.ekhZ4Mfr6P3cYM0Azh0W.jpg,piel_sana
+data\raw\basic_wound_classify\train\abrasion\Foto-como-cuidar-las-cicatrices - Editado_jpg.rf.0GV7JjIFOQ82uFe56S5c.jpg,raspón
+data\raw\basic_wound_classify\train\burn\IMG-20231230-WA0129_jpg.rf.XQsuD5l8dPdSEClcQ23B.jpg,quemadura
+data-clasificador\raw\KaggleWound\Stab_wound\stab_wound (8).jpg,punción
+data\raw\basic_wound_classify\test\laceration\197_jpg.rf.1U008iv9fV9Bwry0IflH.jpg,laceración
+data\raw\basic_wound_classify\test\burn\image1_jpg.rf.6erP8UmKTQuW2eO0Xv6O.jpg,quemadura
+data\raw\basic_wound_classify\train\normal skin\124_jpg.rf.URq6UZ4uqXdW5vzpEtO6.jpg,piel_sana
+data\raw\basic_wound_classify\train\bruise\images667_jpg.rf.hoffDoBhhTQaSawzv9la.jpg,hematoma
+data\raw\basic_wound_classify\train\burn\IMG-20231230-WA0024_jpg.rf.gGEQE1Y7PHMNMekKdXsU.jpg,quemadura
+data\raw\basic_wound_classify\test\bruise\bruise32_JPG.rf.J1bPV4907OtCEdKfWKxq.JPG,hematoma
+data\raw\basic_wound_classify\train\normal skin\119_jpg.rf.LiQdGKD1tEl4lLzyVDOS.jpg,piel_sana
+data\raw\basic_wound_classify\train\abrasion\depositphotos_63206887-stock-photo-scraped-knee - Editado_jpg.rf.THDgILxHUnAAKFQgoKTt.jpg,raspón
+data\raw\basic_wound_classify\test\burn\IMG-20231230-WA0067_jpg.rf.2lWhUdBH3DRp6bLsHe4b.jpg,quemadura
+data\raw\basic_wound_classify\train\laceration\249_jpg.rf.c9aJsgHG8WQbjjxujA5Y.jpg,laceración
+data-clasificador\raw\KaggleWound\Bruises\bruises (49).jpg,hematoma
+data\raw\basic_wound_classify\train\bruise\images765_jpg.rf.qfHmIkBNzv7y3EKnrreY.jpg,hematoma
+data\raw\basic_wound_classify\train\normal skin\142_jpg.rf.hhhhDamTPZj6UDt4k0sz.jpg,piel_sana
+data\raw\basic_wound_classify\test\laceration\13_jpg.rf.1AFrkUbeajWd9oSpAzId.jpg,laceración
+data\raw\basic_wound_classify\train\laceration\233_jpg.rf.NZsDuEcY4LyhLF372pqy.jpg,laceración
+data\raw\basic_wound_classify\train\normal skin\Ikxhr6d7iTk_jpg.rf.TS7bpIB821C57NNSDdM4.jpg,piel_sana
+data\raw\basic_wound_classify\train\normal skin\12_bright_jpg.rf.5JlreUtztUyJiE0SImQS.jpg,piel_sana
+data\raw\basic_wound_classify\train\abrasion\istockphoto-1093523256-1024x1024_jpg.rf.4BtotWDpNv5P0Cqk9XOq.jpg,raspón
+data-clasificador\raw\KaggleWound\Laceration\laseration (15).jpg,laceración
+data\raw\basic_wound_classify\train\laceration\235_jpg.rf.klyfQnN0sYH14BzmFAs9.jpg,laceración
+data\raw\basic_wound_classify\train\laceration\225_jpg.rf.hdEtDV5r52jjagb7xiEV.jpg,laceración
+data\raw\basic_wound_classify\train\abrasion\100920232-herida-por-caída-de-rodilla_jpg.rf.8CJK9Fssg0an6VyvVGQT.jpg,raspón
+data\raw\basic_wound_classify\train\laceration\cut (4)_jpg.rf.bzzGd1I0t8yXxylN8ETZ.jpg,laceración
+data\raw\basic_wound_classify\train\bruise\bruise67_JPG.rf.u0iYXgiJuJZFlFBeP6ta.JPG,hematoma
+data\raw\basic_wound_classify\train\laceration\173_jpg.rf.8ctSl6gLZT4J4ouiENxf.jpg,laceración
+data\raw\basic_wound_classify\test\burn\IMG-20231230-WA0057_jpg.rf.OgzJf1znYXvcu8Wn0s9N.jpg,quemadura
+data\raw\basic_wound_classify\train\normal skin\tải xuống (2)_jpg.rf.eM7aeRlIaVvssltEUVpn.jpg,piel_sana
+data\raw\basic_wound_classify\train\bruise\bruise1_jpg.rf.FXuL1HRwSezBZ5AlJ9AO.jpg,hematoma
+data\raw\basic_wound_classify\test\burn\IMG-20231230-WA0132_jpg.rf.0mCQJ9M4SsEjHsXMpPm0.jpg,quemadura
+data\raw\basic_wound_classify\train\bruise\images827_jpg.rf.dbVdmbRmMUm2Mjj0I86c.jpg,hematoma
+data\raw\basic_wound_classify\train\normal skin\NHetXqRzDpc_jpg.rf.Rv9NOJAIdko4FV1ehWlR.jpg,piel_sana
+data-clasificador\raw\KaggleWound\Ingrown_nails\ingrown_nail (21).jpg,corte
+data\raw\basic_wound_classify\valid\normal skin\WbYZZFael4A_jpg.rf.cweKlIKE42At1wlbW97n.jpg,piel_sana
+data\raw\basic_wound_classify\train\laceration\212_jpg.rf.PteB44misFFqwa0bU97r.jpg,laceración
+data\raw\basic_wound_classify\train\normal skin\LV-DyB46ITc_jpg.rf.MjtkQFeLFZTesTGo49Lv.jpg,piel_sana
+data\raw\basic_wound_classify\train\abrasion\images (48)_jpg.rf.h6ZwxphXUEmA1FYMBIu5.jpg,raspón
+data\raw\basic_wound_classify\train\burn\IMG-20231230-WA0098_jpg.rf.K9sxfpHo2XAwWZ7nF8zP.jpg,quemadura
+data\raw\basic_wound_classify\valid\normal skin\depositphotos_361102626-stock-photo-macro-female-skin (1)_jpg.rf.RY3e971b5d7FeX3nuiqH.jpg,piel_sana
+data\raw\basic_wound_classify\train\normal skin\depositphotos_289959416-stock-photo-scarlet-fever-starts-with-a_jpg.rf.nI8NPT6ql5Wc9us56hd7.jpg,piel_sana
+data\raw\basic_wound_classify\train\laceration\227_jpg.rf.Ud89h4nCEXY7V7xFA3WO.jpg,laceración
+data\raw\basic_wound_classify\train\burn\GettyImages-1301315419_jpg.rf.4reBAvYFqBsLoCoqCB9k.jpg,quemadura
+data\raw\basic_wound_classify\train\normal skin\r3v1aBoZPp0_jpg.rf.vHPTsWdHODq33AclXKpn.jpg,piel_sana
+data-clasificador\raw\KaggleWound\Laceration\laseration (44).jpg,laceración
+data\raw\basic_wound_classify\train\normal skin\hMBJ2bLRGw8_jpg.rf.HzegmTKkfrjtRTu78VeY.jpg,piel_sana
+data-clasificador\raw\KaggleWound\Bruises\bruises (16).jpg,hematoma
+data\raw\basic_wound_classify\train\burn\IMG-20231230-WA0148_jpg.rf.7HwtLKy4KR5scj5hSDkO.jpg,quemadura
+data-clasificador\raw\KaggleWound\Cut\cut (8).jpg,corte
+data-clasificador\raw\KaggleWound\Cut\cut (39).jpg,corte
+data\raw\basic_wound_classify\valid\abrasion\istockphoto-1277257276-170667a_jpg.rf.MBLaCIPw8iktIceLme6u.jpg,raspón
+data\raw\basic_wound_classify\train\normal skin\pD6A6UgvISc_jpg.rf.kPkCzAiZMaAQoMJVg34d.jpg,piel_sana
+data-clasificador\raw\KaggleWound\Abrasions\abrasions (39).jpg,raspón
+data-clasificador\raw\KaggleWound\Bruises\bruises (57).jpg,hematoma
+data\raw\basic_wound_classify\train\bruise\bruise101_jpg.rf.abmxWJ1af07Ejlj5AwFd.jpg,hematoma
+data\raw\basic_wound_classify\train\bruise\bruise4_jpg.rf.eD2FbLJAbBT1JEnn3Fbi.jpg,hematoma
+data\raw\basic_wound_classify\test\burn\OIP_jpeg_jpg.rf.SkFeWYs0Oys5zFZZXBwB.jpg,quemadura
+data\raw\basic_wound_classify\train\burn\IMG-20231230-WA0069_jpg.rf.zrh7Ng1qBMcxOBh9x2wg.jpg,quemadura
+data\raw\basic_wound_classify\train\laceration\cut (31)_jpg.rf.adzbi3a5PErlojKUR8me.jpg,laceración
+data\raw\basic_wound_classify\train\bruise\images259_jpg.rf.wDEOnpZfgiXwHO4geAqo.jpg,hematoma
+data-clasificador\raw\KaggleWound\Laceration\laseration (2).jpg,laceración
+data\raw\basic_wound_classify\train\burn\img543_jpg.rf.30Jnkg3IDCis0gYoEbh9.jpg,quemadura
+data\raw\basic_wound_classify\train\laceration\cut (30)_jpg.rf.mEc5AWxmb1xsVLBN29QB.jpg,laceración
+data-clasificador\raw\KaggleWound\Bruises\bruises (107).jpg,hematoma
+data\raw\basic_wound_classify\test\abrasion\depositphotos_13371164-stock-photo-scraped-skin_jpg.rf.hR6Ovldakcrf4Mi9Wt3q.jpg,raspón
+data\raw\basic_wound_classify\train\bruise\images309_jpg.rf.OQ36jHjf3ANeiARlbnhm.jpg,hematoma
+data\raw\basic_wound_classify\train\laceration\145_jpg.rf.11J4v9PvkcvtGQjeOxyP.jpg,laceración
+data\raw\basic_wound_classify\test\burn\IMG-20231230-WA0040_jpg.rf.3sZMPcibi1ts7kRh69e0.jpg,quemadura
+data\raw\basic_wound_classify\train\burn\ds01176_im04387_mcdc7_second_degree_burnthu_jpg_jpg.rf.OTbJBsPlbUUUQcfRcGyZ.jpg,quemadura
+data\raw\basic_wound_classify\train\normal skin\tGmnRLa2bIg_jpg.rf.nDt2K7aXgyZCe55cB156.jpg,piel_sana
+data-clasificador\raw\KaggleWound\Ingrown_nails\ingrown_nail (8).jpg,corte
+data-clasificador\raw\KaggleWound\Abrasions\abrasions (51).jpg,raspón
+data\raw\basic_wound_classify\train\bruise\images552_jpg.rf.THNWoOO0pphPvif71TaP.jpg,hematoma
+data\raw\basic_wound_classify\train\burn\img1429_jpg.rf.9qqgCWU2oAaXdmcoZNpb.jpg,quemadura
+data\raw\basic_wound_classify\valid\laceration\140_jpg.rf.MNDRKSNh3r9OQw6Tr05f.jpg,laceración
+data\raw\basic_wound_classify\train\normal skin\150_jpg.rf.ze99d8OCYlIHYvwYIYAF.jpg,piel_sana
+data\raw\basic_wound_classify\train\burn\img662_jpg.rf.VaorzcTSWUjAdr52TL7u.jpg,quemadura
+data-clasificador\raw\KaggleWound\Cut\cut (43).jpg,corte
+data\raw\basic_wound_classify\test\normal skin\front-view-young-man-posing-studio_jpg.rf.YDqPdHpRaSuHj6aP0L3a.jpg,piel_sana
+data\raw\basic_wound_classify\train\normal skin\1000_F_88188994_bRiLIk8DIDXQwbJrGTnlmbxcHRSFRETs_jpg.rf.oxTWPclXT24zh4Q47Xw4.jpg,piel_sana
+data\raw\basic_wound_classify\train\laceration\137_jpg.rf.uZVlOLG5ytrpYL8WPBGt.jpg,laceración
+data\raw\basic_wound_classify\train\bruise\bruise61_JPG.rf.n6iduV7kjTX7j00UpV1P.JPG,hematoma
+data-clasificador\raw\KaggleWound\Ingrown_nails\ingrown_nail (19).jpg,corte
+data\raw\basic_wound_classify\train\laceration\cut (8)_jpg.rf.aHIIQNqhFxDwojrx8GHj.jpg,laceración
+data\raw\basic_wound_classify\train\burn\IMG-20231230-WA0027_jpg.rf.Qlczi4LLCOV3NgCSZPdr.jpg,quemadura
+data-clasificador\raw\KaggleWound\Bruises\bruises (105).jpg,hematoma
+data\raw\basic_wound_classify\train\bruise\images454_jpg.rf.jfc88Ki4KcajtcTeQNUa.jpg,hematoma
+data-clasificador\raw\KaggleWound\Bruises\bruises (30).jpg,hematoma
+data-clasificador\raw\KaggleWound\Bruises\bruises (58).jpg,hematoma
+data\raw\basic_wound_classify\train\normal skin\depositphotos_360299222-stock-photo-hydrated-skin-details-texture-epidermis_jpg.rf.SCxcwIvgmj39RfvcboMo.jpg,piel_sana
+data\raw\basic_wound_classify\train\bruise\images774_jpg.rf.bZXrc2TDRVU7JrwJvwFg.jpg,hematoma
+data-clasificador\raw\KaggleWound\Abrasions\abrasions (19).jpg,raspón
+data-clasificador\raw\KaggleWound\Bruises\bruises (31).jpg,hematoma
+data\raw\basic_wound_classify\train\abrasion\97363458-dos-rasguños-inflamados-poco-profundos-en-la-piel-humana_jpg.rf.ATLFoG4vypA1LbRAWpgz.jpg,raspón
+data\raw\basic_wound_classify\test\abrasion\IMG-20250609-WA0006_jpg.rf.iBKB8rnFKONwT9twtObi.jpg,raspón
+data\raw\basic_wound_classify\train\abrasion\istockphoto-1138340973-612x612_jpg.rf.UKm5KJqxSY7J9cflrwjL.jpg,raspón
+data\raw\basic_wound_classify\train\normal skin\depositphotos_449338124-stock-photo-hand-young-girl-background-macro_jpg.rf.YkN94rxRUuwzT7CyqCzQ.jpg,piel_sana
+data\raw\basic_wound_classify\train\abrasion\diabetes-and-wound-healing_jpg.rf.BQVM8FLIiZ0qulFoRvo2.jpg,raspón
+data\raw\basic_wound_classify\test\laceration\165_jpg.rf.Kp9OQnc8vsZJsKjcZO7P.jpg,laceración
+data\raw\basic_wound_classify\valid\laceration\186_jpg.rf.wPULJ62TSpQkgasixgOu.jpg,laceración
+data\raw\basic_wound_classify\test\bruise\big-bruise-on-girls-skin-260nw-1833607507_jpg.rf.VtQiwLiVnZgjc0jpqVOk.jpg,hematoma
+data-clasificador\raw\KaggleWound\Bruises\bruises (6).jpg,hematoma
+data\raw\basic_wound_classify\train\burn\IMG-20231230-WA0122_jpg.rf.7eomznoJgO5sTWQmNWy8.jpg,quemadura
+data\raw\basic_wound_classify\train\normal skin\depositphotos_220079016-stock-photo-human-skin-texture-various-parts_jpg.rf.opxwt8gexVnCj1GyYlEo.jpg,piel_sana
+data\raw\basic_wound_classify\train\bruise\images888_jpg.rf.PlQHtaVjsWMh7NctaGPO.jpg,hematoma
+data-clasificador\raw\KaggleWound\Burns\burns (8).jpg,quemadura
+data\raw\basic_wound_classify\train\bruise\images818_jpg.rf.4C2waZs5PngeIAXV7536.jpg,hematoma
+data\raw\basic_wound_classify\train\burn\img1230_jpg.rf.3DKc0gUQFLrSGfJEIzbs.jpg,quemadura
+data-clasificador\raw\KaggleWound\Cut\cut (10).jpg,corte
+data-clasificador\raw\KaggleWound\Abrasions\abrasions (3).jpg,raspón
+data\raw\basic_wound_classify\train\bruise\images327_jpg.rf.Ms2rXsDBt52Rf1u7FdvV.jpg,hematoma
+data\raw\basic_wound_classify\train\bruise\bruise102_jpg.rf.Su6fTYueFismqvtqedB6.jpg,hematoma
+data\raw\basic_wound_classify\train\laceration\224_jpg.rf.Tl0mYTAOLRwA4bpSDCxH.jpg,laceración
+data-clasificador\raw\KaggleWound\Abrasions\abrasions (50).jpg,raspón
+data\raw\basic_wound_classify\train\normal skin\depositphotos_307357238-stock-photo-macro-shooting-of-the-young_jpg.rf.jiB58lO7c4KpWBvEgGqg.jpg,piel_sana
+data\raw\basic_wound_classify\train\normal skin\depositphotos_181756190-stock-photo-macro-human-skin-close_jpg.rf.EICEGLHPuvZfer6zfJkO.jpg,piel_sana
+data\raw\basic_wound_classify\test\burn\IMG-20231230-WA0002_jpg.rf.SPZBrDiVRfiGQdq2QBps.jpg,quemadura
+data-clasificador\raw\KaggleWound\Cut\cut (28).jpg,corte
+data\raw\basic_wound_classify\train\normal skin\4-2_jpg.rf.meotBN0ayzOqGk4oke4a.jpg,piel_sana
+data-clasificador\raw\KaggleWound\Stab_wound\stab_wound (9).jpg,punción
+data\raw\basic_wound_classify\train\laceration\cut (24)_jpg.rf.NZplukfzPj9EpoA6CHda.jpg,laceración
+data\raw\basic_wound_classify\train\laceration\146_jpg.rf.3P2sDuweEGWIagpf83SF.jpg,laceración
+data\raw\basic_wound_classify\test\burn\IMG-20231230-WA0065_jpg.rf.eSmgfHktG71LALiI1FfL.jpg,quemadura
+data-clasificador\raw\KaggleWound\Stab_wound\stab_wound (22).jpg,punción
+data\raw\basic_wound_classify\train\abrasion\153057898-herida-de-dos-rasguños-en-la-rodilla-femenina-con-cierre-de-cicatriz-grande-concepto-de-salud-y_jpg.rf.eu64puH9Trzr622Ns24Q.jpg,raspón
+data-clasificador\raw\KaggleWound\Abrasions\abrasions (43).jpg,raspón
+data\raw\basic_wound_classify\train\normal skin\s3jMMJz5Af4_jpg.rf.poOl87iNMmWW53ITrgdL.jpg,piel_sana
+data\raw\basic_wound_classify\train\normal skin\1wOCbIRmF3M_jpg.rf.zIAauYjsv5JpC6JC2M4l.jpg,piel_sana
+data\raw\basic_wound_classify\train\normal skin\102_jpg.rf.9nh2Ohntri3w0Pq8AD5L.jpg,piel_sana
+data\raw\basic_wound_classify\train\bruise\images296_jpg.rf.7KLokqtssqwi9MC8xhWk.jpg,hematoma
+data\raw\basic_wound_classify\train\laceration\138_jpg.rf.UphTCFzW366crqzoKyNo.jpg,laceración
+data-clasificador\raw\KaggleWound\Bruises\bruises (93).jpg,hematoma
+data\raw\basic_wound_classify\train\burn\IMG-20231230-WA0063_jpg.rf.eISL307U8vO8o8VSaZUH.jpg,quemadura
+data\raw\basic_wound_classify\train\bruise\images233_jpg.rf.M6oH2dSTzNMVWMW1midW.jpg,hematoma
+data-clasificador\raw\KaggleWound\Laceration\laseration (61).jpg,laceración
+data-clasificador\raw\KaggleWound\Abrasions\abrasions (13).jpg,raspón
+data\raw\basic_wound_classify\train\laceration\188_jpg.rf.ePPP4Ih6OhykICTvl6Vy.jpg,laceración
+data\raw\basic_wound_classify\train\laceration\232_jpg.rf.gFczOVGAcF0flyXkTEoy.jpg,laceración
+data-clasificador\raw\KaggleWound\Abrasions\abrasions (33).jpg,raspón
+data\raw\basic_wound_classify\train\burn\IMG-20231230-WA0135_jpg.rf.b9DGf5lNqm207lpZscfE.jpg,quemadura
+data\raw\basic_wound_classify\valid\abrasion\heridas-espinilla-contusiones-despues-caida_406939-6229 - Editado_png.rf.BLQdmRGifKuTK7NgcgTh.png,raspón
+data-clasificador\raw\KaggleWound\Bruises\bruises (22).jpg,hematoma
+data-clasificador\raw\KaggleWound\Ingrown_nails\ingrown_nail (7).jpg,corte
+data-clasificador\raw\KaggleWound\Abrasions\abrasions (32).jpg,raspón
+data-clasificador\raw\KaggleWound\Bruises\bruises (113).jpg,hematoma
+data-clasificador\raw\KaggleWound\Burns\burns (24).jpg,quemadura
+data\raw\basic_wound_classify\train\burn\img1236_jpg.rf.4KsDoUUUiCJoukXiTPJN.jpg,quemadura
+data-clasificador\raw\KaggleWound\Ingrown_nails\ingrown_nail (30).jpg,corte
+data\raw\basic_wound_classify\train\burn\img1241_jpg.rf.JhOAAPIIy7JGyzl8NoPY.jpg,quemadura
+data\raw\basic_wound_classify\test\laceration\cut (29)_jpg.rf.1wjQkyS6wftXkUyl8MBC.jpg,laceración
+data\raw\basic_wound_classify\train\abrasion\images (43)_jpg.rf.YYKkJVm0WrXt9yG6dBGP.jpg,raspón
+data\raw\basic_wound_classify\train\laceration\cut (27)_jpg.rf.GXPPp3NfR0gOR5H4wg8D.jpg,laceración
+data\raw\basic_wound_classify\train\burn\IMG-20231230-WA0026_jpg.rf.NGOYuJ65940dmyOYuubE.jpg,quemadura
+data-clasificador\raw\KaggleWound\Laceration\laseration (32).jpg,laceración
+data\raw\basic_wound_classify\test\burn\IMG-20231230-WA0029_jpg.rf.93lIY1QPzXCM8SYYxH87.jpg,quemadura
+data\raw\basic_wound_classify\train\burn\IMG-20231230-WA0024_jpg.rf.zYOkCCeu70zZ3OpoH3CU.jpg,quemadura
+data\raw\basic_wound_classify\train\normal skin\images (15)_jpg.rf.OZPJTsDibVBTmpKMlIjk.jpg,piel_sana
+data\raw\basic_wound_classify\train\burn\IMG-20231230-WA0009_jpg.rf.nypyTeKiT4XGy3OSzLxV.jpg,quemadura
+data\raw\basic_wound_classify\train\abrasion\41046033-contusión-sangrienta-fresca-herida-en-la-rodilla - Editado_jpg.rf.jSJa9NpXxR7lQLlWOwfw.jpg,raspón
+data\raw\basic_wound_classify\train\bruise\images134_jpg.rf.BdA6QWHi1uTdOjpeLXRw.jpg,hematoma
+data\raw\basic_wound_classify\train\normal skin\135_bright_jpg.rf.HDPqxow7cofnqb5LqKj0.jpg,piel_sana
+data\raw\basic_wound_classify\train\bruise\images656_jpg.rf.gzgmy6odgYWeMGwOIpdm.jpg,hematoma
+data\raw\basic_wound_classify\test\laceration\C373438667FEAA36AB2578630C838DB362F21FA8_size40_w1000_h666_jpeg.rf.s0SWU6UJIlHqdiU1xwXu.jpeg,laceración
+data\raw\basic_wound_classify\train\abrasion\59048213-la-sangre-que-aspira-del-mosquito-en-la-piel-humana-con-una-mancha-roja - Editado_jpg.rf.cNoEyt9LEB9TbYgAEw7U.jpg,raspón
+data\raw\basic_wound_classify\valid\burn\image1_jpg.rf.sdgVziRdQjk0wjbbkZF7.jpg,quemadura
+data-clasificador\raw\KaggleWound\Laceration\laseration (9).jpg,laceración
+data\raw\basic_wound_classify\test\normal skin\photocaseimebbxki3_jpg.rf.1pNuzK3anvyAQmfwAsHx.jpg,piel_sana
+data\raw\basic_wound_classify\train\abrasion\25858_19 - Editado_jpg.rf.faYjGZXbDSus2M7R3bbM.jpg,raspón
+data\raw\basic_wound_classify\train\bruise\Bruise-on-knee-732x549-thumbnail_jpg.rf.6vSWfGETuUghRXkYJxOK.jpg,hematoma
+data-clasificador\raw\KaggleWound\Burns\burns (26).jpg,quemadura
+data\raw\basic_wound_classify\valid\normal skin\90OF0XY3sO0_jpg.rf.dLWlkNjtDD2y1ZBr6Dob.jpg,piel_sana
+data-clasificador\raw\KaggleWound\Laceration\laseration (58).jpg,laceración
+data\raw\basic_wound_classify\train\normal skin\79_jpg.rf.urdMv14BS9KuKrJh6N8P.jpg,piel_sana
+data\raw\basic_wound_classify\train\burn\IMG-20231230-WA0031_jpg.rf.Lq2wyW43SmSaRhamwDgI.jpg,quemadura
+data\raw\basic_wound_classify\train\normal skin\157_jpg.rf.vCstOYgROMxCyZfXunj2.jpg,piel_sana
+data\raw\basic_wound_classify\train\laceration\shutterstock_166696769_jpg.rf.QKzXH8x207Oo1sQF35EL.jpg,laceración
+data-clasificador\raw\KaggleWound\Laceration\laseration (5).jpg,laceración
+data-clasificador\raw\KaggleWound\Stab_wound\stab_wound (19).jpg,punción
+data\raw\basic_wound_classify\valid\bruise\bruise3_jpg.rf.GaZGtMFgAQi34ZcDuKXw.jpg,hematoma
+data-clasificador\raw\KaggleWound\Ingrown_nails\ingrown_nail (9).jpg,corte
