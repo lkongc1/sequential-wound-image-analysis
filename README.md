@@ -82,12 +82,14 @@ src/
   utils/          Logger estructurado, deteccion de GPU
 
 scripts/
-  pipeline/       Descarga, construccion, EDA, preparacion YOLO, integracion
-  training/       U-Net, screening 12 arquitecturas, train individual, YOLO
-  classification/ Clasificador single y Dask, descarga de datos, pseudo-mascaras
-  evaluation/     Evaluacion del modelo final
-  inference/      Prediccion, YOLO+U-Net hibrido, Watershed, comparativa
-  utils/          Monitoreo de entrenamiento
+  pipeline/       download_dataset, build_dataset, explore_data,
+                  prepare_yolo, add_negatives, integrate_datasets
+  training/       train_unet, screen_architectures, train_single, train_yolo
+  classification/ train_classifier, train_classifier_dask, download_data, generate_masks
+  evaluation/     evaluate_model
+  inference/      predict, predict_yolo, predict_hybrid, demo_watershed,
+                  compare_models, predict_presentation
+  utils/          monitor
 
 config/           YAMLs de configuracion por entorno
 tests/            Unitarios, integracion, clinicos
@@ -110,6 +112,7 @@ pip install -r requirements.txt
 ```bash
 git clone https://github.com/lkongc1/sequential-wound-image-analysis.git
 cd sequential-wound-image-analysis
+git lfs pull
 python -m venv .venv
 .venv\Scripts\activate     # Windows
 source .venv/bin/activate  # Linux/Mac
@@ -117,6 +120,23 @@ pip install -r requirements.txt
 ```
 
 Copiar `.env.example` a `.env` y configurar las variables de entorno necesarias.
+
+Git LFS es obligatorio: los pesos de los modelos preentrenados se almacenan con LFS. Sin `git lfs pull`, los archivos `.pth` seran punteros vacios.
+
+## Flujo de trabajo
+
+Este repositorio usa un flujo simple con dos ramas:
+
+```
+main       <- codigo estable, listo para produccion
+develop    <- rama de integracion para nuevos cambios
+```
+
+Para contribuir:
+1. Crear rama desde `develop`: `git checkout -b feat/mi-cambio develop`
+2. Hacer cambios y commits con mensajes descriptivos
+3. Abrir PR hacia `develop`
+4. Una vez mergeado y validado, se promueve a `main`
 
 ## Inicio rapido
 
